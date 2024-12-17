@@ -3,12 +3,209 @@
 <head>
   <!-- Basic Meta -->
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scal<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Basic Meta -->
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="description" content="Digital Forensics & Incident Response, Threat Hunting, and Malware Analysis insights." />
   <meta name="keywords" content="DFIR, Cybersecurity, Threat Hunting, Malware Analysis, Incident Response" />
-<!DOCTYPE html>
-<html lang="en">
-<head><!DOCTYPE html>
+
+  <title>Justin Watson</title>
+  
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- Expanded Favicon Support -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+
+  <style>
+    :root {
+      --bg-color: #0e0e0e;
+      --text-color: #ccc;
+      --accent-color: #48a9a6; 
+      --card-bg: #191919;
+      --heading-color: #fff;
+      --link-color: #48a9a6;
+      --transition-speed: 0.3s;
+      --scale-hover: scale(1.03);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg-color);
+      font-family: 'Orbitron', sans-serif;
+      color: var(--text-color);
+      line-height: 1.6;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    .social-icons {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      pointer-events: none; /* Initially disabled to avoid blocking splash drag */
+    }
+
+    .social-icons a {
+      display: inline-block;
+      width: 30px; /* Icon size */
+      height: 30px;
+      transition: transform var(--transition-speed), opacity var(--transition-speed);
+    }
+
+    .social-icons a:hover {
+      transform: scale(1.1);
+      opacity: 0.8;
+    }
+
+    .social-icon {
+      width: 100%;
+      height: 100%;
+      filter: invert(70%) sepia(10%) saturate(300%) hue-rotate(150deg);
+      transition: filter var(--transition-speed);
+    }
+
+    .social-icons a:hover .social-icon {
+      filter: invert(100%) sepia(50%) saturate(500%) hue-rotate(160deg); /* Accent color effect */
+    }
+
+    .splash {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      z-index: 9999;
+      overflow: hidden;
+      cursor: grab;
+    }
+
+    .splash-logo-container {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .splash-logo {
+      width: 100px;
+      opacity: 0.9;
+      animation: pulse 2s infinite alternate ease-in-out;
+    }
+
+    .splash-drag-overlay {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 40px 20px;
+      box-sizing: border-box;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .drag-handle {
+      width: 40px;
+      height: 4px;
+      background: var(--accent-color);
+      border-radius: 2px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Splash Screen -->
+  <div class="splash" id="splash">
+    <div class="splash-logo-container">
+      <img src="images/raven-logo.png" alt="Raven Logo" class="splash-logo"/>
+      <p class="tagline">Unmasking Digital Threats</p>
+    </div>
+    <div class="splash-drag-overlay" id="splashDragOverlay">
+      <div class="drag-handle"></div>
+      <p class="splash-instruction">Drag Up to Unlock</p>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <nav>
+      <div class="logo">Justin Watson</div>
+      <div class="social-icons">
+        <a href="https://bsky.app/profile/justwats.com" target="_blank" title="BlueSky">
+          <img src="images/bluesky-svgrepo-com.svg" alt="BlueSky" class="social-icon" />
+        </a>
+        <a href="https://mastodon.social/@JustWats" target="_blank" title="Mastodon">
+          <img src="images/mastodon-svgrepo-com.svg" alt="Mastodon" class="social-icon" />
+        </a>
+        <a href="https://github.com/JustWats" target="_blank" title="GitHub">
+          <img src="images/github-svgrepo-com.svg" alt="GitHub" class="social-icon" />
+        </a>
+        <a href="https://www.linkedin.com/in/justwats" target="_blank" title="LinkedIn">
+          <img src="images/linkedin-svgrepo-com.svg" alt="LinkedIn" class="social-icon" />
+        </a>
+        <a href="mailto:mail@justwats.com" title="Email">
+          <img src="images/mail-svgrepo-com.svg" alt="Email" class="social-icon" />
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <script>
+    const splash = document.getElementById('splash');
+    const splashDragOverlay = document.getElementById('splashDragOverlay');
+    const socialIcons = document.querySelector('.social-icons');
+
+    let startY = 0, currentY = 0, isDragging = false;
+    const threshold = 100;
+
+    splashDragOverlay.addEventListener('touchstart', e => {
+      isDragging = true;
+      startY = e.touches[0].clientY;
+      splashDragOverlay.style.transition = 'none';
+    });
+
+    splashDragOverlay.addEventListener('touchmove', e => {
+      if (!isDragging) return;
+      currentY = e.touches[0].clientY;
+      const diff = startY - currentY;
+      if (diff > 0) {
+        splashDragOverlay.style.transform = `translateY(-${diff}px)`;
+      }
+    });
+
+    splashDragOverlay.addEventListener('touchend', () => {
+      isDragging = false;
+      const diff = startY - currentY;
+
+      if (diff > threshold) {
+        splash.style.opacity = '0';
+        setTimeout(() => {
+          splash.style.display = 'none';
+          socialIcons.style.pointerEvents = 'auto';
+        }, 500);
+      } else {
+        splashDragOverlay.style.transition = 'transform 0.3s ease';
+        splashDragOverlay.style.transform = 'translateY(0)';
+      }
+    });
+  </script>
+</body>
+</html>
+e=1.0"/>
+  <meta name="description" content="Digital Forensics & Incident Response, Threat Hunting, and Malware Analysis insights." />
+  <meta name="keywords" content="DFIR, Cybersecurity, Threat Hunti<!DOCTYPE html>
 <html lang="en">
 <head>
   <!-- Basic Meta -->
@@ -207,6 +404,19 @@
       color: #aaa;
       font-size: 0.9rem;
       margin-bottom: 20px;
+      position: relative;
+      text-align: center;
+    }
+
+    .splash-instruction::before {
+      content: '';
+      display: block;
+      width: 0; 
+      height: 0; 
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 10px solid var(--accent-color);
+      margin: 0 auto 10px;
     }
 
     #introAudio {
@@ -229,7 +439,17 @@
       pointer-events: none;
     }
 
-    /* We'll handle animations in JS after splash unlock */
+    /* Header & content initial states for intro animation */
+    header, .hero, main, footer {
+      opacity:0; 
+      transform: scale(0.95);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    header.loaded, .hero.loaded, main.loaded, footer.loaded {
+      opacity:1;
+      transform: none; 
+    }
 
     /* Header */
     header {
@@ -239,20 +459,51 @@
       backdrop-filter: blur(3px);
       z-index: 1000;
       border-bottom: 1px solid #222;
-      opacity:0; /* Will fade in after intro */
-      transform: translateY(-20px); /* initial for intro animation */
     }
 
-    /* Hero and main content initial state for intro animation */
-    .hero, main, footer {
-      opacity:0; 
-      transform: scale(0.95); /* subtle scale and fade, will animate in after intro */
+    header nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px;
+      gap: 20px;
     }
 
-    header.loaded, .hero.loaded, main.loaded, footer.loaded {
-      transition: opacity 0.8s ease, transform 0.8s ease;
-      opacity:1;
-      transform: none; 
+    header .logo {
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: var(--heading-color);
+      letter-spacing: 1px;
+    }
+
+    .social-icons {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      pointer-events: none; /* Disabled until splash is closed */
+    }
+    
+    .social-icons a {
+      display: inline-block;
+    }
+
+    .icon {
+      width: 24px;
+      height: 24px;
+      filter: invert(85%) brightness(1.2);
+      transition: filter var(--transition-speed);
+    }
+
+    .social-icons a:hover .icon {
+      filter: invert(50%) brightness(1.5) hue-rotate(50deg);
+    }
+
+    .email {
+      border: none;
+      padding: 0;
+      margin-left: 10px;
     }
 
     /* Hero */
@@ -447,8 +698,8 @@
   <!-- Mainframe Intro Overlay -->
   <div class="mainframe-intro" id="mainframeIntro">
     <div>
-      <p>Welcome!</p>
-      <p>Transitioning to personal blog.</p>
+      <p>Access Granted...</p>
+      <p>Uploading into Mainframe...</p>
     </div>
   </div>
 
@@ -459,7 +710,7 @@
   <div class="splash" id="splash">
     <div class="splash-logo-container">
       <img src="images/raven-logo.png" alt="Raven Logo" class="splash-logo"/>
-      <p class="tagline">Resources for cybersecurity</p>
+      <p class="tagline">Unmasking Digital Threats</p>
     </div>
     <div class="splash-drag-overlay" id="splashDragOverlay">
       <div class="drag-handle"></div>
@@ -470,19 +721,30 @@
   <!-- Header -->
   <header>
     <nav>
-      <div class="logo"><#JustWats</div>
-      <ul>
-        <li><a href="#featured">Featured</a></li>
-        <li><a href="#recent">Recent</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="https://github.com/JustWats" target="_blank" rel="noopener noreferrer">GitHub</a></li>
-      </ul>
+      <div class="logo">Justin Watson</div>
+      <div class="social-icons">
+        <a href="https://bsky.app/profile/justwats.com" target="_blank" rel="noopener noreferrer" title="BlueSky">
+          <img src="/images/bluesky-svgrepo-com.svg" alt="BlueSky" class="icon">
+        </a>
+        <a href="https://mastodon.social/@JustWats" target="_blank" rel="noopener noreferrer" title="Mastodon">
+          <img src="/images/mastodon-svgrepo-com.svg" alt="Mastodon" class="icon">
+        </a>
+        <a href="https://github.com/JustWats" target="_blank" rel="noopener noreferrer" title="GitHub">
+          <img src="/images/github-svgrepo-com.svg" alt="GitHub" class="icon">
+        </a>
+        <a href="https://www.linkedin.com/in/justwats" target="_blank" rel="noopener noreferrer" title="LinkedIn">
+          <img src="/images/linkedin-svgrepo-com.svg" alt="LinkedIn" class="icon">
+        </a>
+        <a class="email" href="mailto:mail@justwats.com">
+          <img src="/images/mail-svgrepo-com.svg" alt="Email" class="icon">
+        </a>
+      </div>
     </nav>
   </header>
 
   <!-- Hero -->
   <section class="hero">
-    <h1 data-text="Personal Blog"><PersonalBlog></h1>
+    <h1 data-text="<#JustWats>"><#JustWats></h1>
     <p>Quick insights on Digital Forensics, Incident Response, Threat Hunting, and Malware Analysis.</p>
   </section>
 
@@ -549,6 +811,7 @@
     const splashDragOverlay = document.getElementById('splashDragOverlay');
     const introAudio = document.getElementById('introAudio');
     const mainframeIntro = document.getElementById('mainframeIntro');
+    const socialIcons = document.querySelector('.social-icons');
 
     let startY = 0;
     let currentY = 0;
@@ -614,6 +877,9 @@
           document.querySelector('.hero').classList.add('loaded');
           document.querySelector('main').classList.add('loaded');
           document.querySelector('footer').classList.add('loaded');
+
+          // Restore social icons interactivity after intro
+          socialIcons.style.pointerEvents = 'auto';
         }, 1000); // wait a second before removing intro completely
       }, 1500); // show mainframe intro text for 1.5s
     }
@@ -630,11 +896,7 @@
   </script>
 </body>
 </html>
-  <!-- Basic Meta -->
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Digital Forensics & Incident Response, Threat Hunting, and Malware Analysis insights." />
-  <meta name="keywords" content="DFIR, Cybersecurity, Threat Hunting, Malware Analysis, Incident Response" />
+ng, Malware Analysis, Incident Response" />
 
   <title>Justin Watson</title>
   
@@ -646,201 +908,9 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="manifest" href="/site.webmanifest">
-
-  <style>
-    :root {
-      --bg-color: #0e0e0e;
-      --text-color: #ccc;
-      --accent-color: #48a9a6; 
-      --card-bg: #191919;
-      --heading-color: #fff;
-      --link-color: #48a9a6;
-      --transition-speed: 0.3s;
-      --scale-hover: scale(1.03);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      background: var(--bg-color);
-      font-family: 'Orbitron', sans-serif;
-      color: var(--text-color);
-      line-height: 1.6;
-      overflow-x: hidden;
-      position: relative;
-    }
-
-    /* Social Icons */
-    .social-icons {
-      display: flex;
-      gap: 15px;
-      align-items: center;
-      pointer-events: none; /* Initially disabled to avoid blocking splash drag */
-    }
-
-    .social-icons a {
-      display: inline-block;
-      width: 30px;
-      height: 30px;
-      transition: transform var(--transition-speed);
-    }
-
-    .social-icons a:hover {
-      transform: scale(1.1);
-    }
-
-    .social-icons img {
-      width: 100%;
-      height: 100%;
-      filter: invert(70%) sepia(10%) saturate(300%) hue-rotate(150deg);
-    }
-
-    .social-icons a:hover img {
-      filter: invert(100%) sepia(50%) saturate(500%) hue-rotate(160deg); /* Accent color effect */
-    }
-
-    /* Header */
-    header {
-      position: sticky;
-      top: 0;
-      background: rgba(14,14,14,0.95);
-      backdrop-filter: blur(3px);
-      z-index: 1000;
-      border-bottom: 1px solid #222;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px;
-    }
-
-    header .logo {
-      font-size: 1.5rem;
-      color: var(--heading-color);
-    }
-
-    /* Splash */
-    .splash {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(4px);
-      z-index: 9999;
-      cursor: grab;
-    }
-
-    .splash-logo-container {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-    }
-
-    .splash-logo {
-      width: 100px;
-      animation: pulse 2s infinite alternate;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      100% { transform: scale(1.05); }
-    }
-
-    .drag-handle {
-      width: 40px;
-      height: 4px;
-      background: var(--accent-color);
-      margin: 20px auto;
-    }
-
-    .splash-instruction {
-      color: #aaa;
-      text-align: center;
-    }
-  </style>
-</head>
-<body>
-  <!-- Splash Screen -->
-  <div class="splash" id="splash">
-    <div class="splash-logo-container">
-      <img src="images/raven-logo.png" alt="Raven Logo" class="splash-logo"/>
-      <p class="splash-instruction">Drag Up to Unlock</p>
-      <div class="drag-handle"></div>
-    </div>
-  </div>
-
-  <!-- Header -->
-  <header>
-    <div class="logo">Justin Watson</div>
-    <div class="social-icons">
-      <a href="https://bsky.app/profile/justwats.com" target="_blank" title="BlueSky">
-        <img src="/images/bluesky-svgrepo-com.svg" alt="BlueSky" />
-      </a>
-      <a href="https://mastodon.social/@JustWats" target="_blank" title="Mastodon">
-        <img src="/images/mastodon-svgrepo-com.svg" alt="Mastodon" />
-      </a>
-      <a href="https://github.com/JustWats" target="_blank" title="GitHub">
-        <img src="/images/github-svgrepo-com.svg" alt="GitHub" />
-      </a>
-      <a href="https://www.linkedin.com/in/justwats" target="_blank" title="LinkedIn">
-        <img src="/images/linkedin-svgrepo-com.svg" alt="LinkedIn" />
-      </a>
-      <a href="mailto:mail@justwats.com" title="Email">
-        <img src="/images/mail-svgrepo-com.svg" alt="Email" />
-      </a>
-    </div>
-  </header>
-
-  <!-- Main Content -->
-  <main>
-    <section class="hero">
-      <h1>Welcome to the Blog</h1>
-      <p>Quick insights on DFIR, Cybersecurity, and Malware Analysis.</p>
-    </section>
-  </main>
-
-  <script>
-    const splash = document.getElementById('splash');
-    const socialIcons = document.querySelector('.social-icons');
-
-    let startY = 0;
-    let currentY = 0;
-    let isDragging = false;
-
-    splash.addEventListener('touchstart', (e) => {
-      isDragging = true;
-      startY = e.touches[0].clientY;
-    });
-
-    splash.addEventListener('touchmove', (e) => {
-      if (!isDragging) return;
-      currentY = e.touches[0].clientY;
-      const diff = startY - currentY;
-      if (diff > 50) {
-        splash.style.opacity = 0;
-        setTimeout(() => splash.style.display = 'none', 500);
-        socialIcons.style.pointerEvents = 'auto';
-      }
-    });
-
-    splash.addEventListener('touchend', () => isDragging = false);
-  </script>
-</body>
-</html>
-
-  <title>Justin Watson</title>
   
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-  
-  <!-- Expanded Favicon Support -->
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  <link rel="manifest" href="/site.webmanifest">
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-k6RqeWeci5ZR/Lv4MR0sA0FfDOMcK3cR1XxN1/tC86P9ENFv5BldnJQcdQciUbWk6zLW6w3LlX7aEvdjdch+5Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <style>
     :root {
@@ -1021,6 +1091,20 @@
       color: #aaa;
       font-size: 0.9rem;
       margin-bottom: 20px;
+      position: relative;
+      text-align: center;
+    }
+
+    /* Add an upward arrow above the instruction */
+    .splash-instruction::before {
+      content: '';
+      display: block;
+      width: 0; 
+      height: 0; 
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 10px solid var(--accent-color);
+      margin: 0 auto 10px;
     }
 
     #introAudio {
@@ -1043,7 +1127,17 @@
       pointer-events: none;
     }
 
-    /* We'll handle animations in JS after splash unlock */
+    /* Header & content initial states for intro animation */
+    header, .hero, main, footer {
+      opacity:0; 
+      transform: scale(0.95);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    header.loaded, .hero.loaded, main.loaded, footer.loaded {
+      opacity:1;
+      transform: none; 
+    }
 
     /* Header */
     header {
@@ -1053,20 +1147,57 @@
       backdrop-filter: blur(3px);
       z-index: 1000;
       border-bottom: 1px solid #222;
-      opacity:0; /* Will fade in after intro */
-      transform: translateY(-20px); /* initial for intro animation */
     }
 
-    /* Hero and main content initial state for intro animation */
-    .hero, main, footer {
-      opacity:0; 
-      transform: scale(0.95); /* subtle scale and fade, will animate in after intro */
+    header nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px;
+      gap: 20px;
     }
 
-    header.loaded, .hero.loaded, main.loaded, footer.loaded {
-      transition: opacity 0.8s ease, transform 0.8s ease;
-      opacity:1;
-      transform: none; 
+    header .logo {
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: var(--heading-color);
+      letter-spacing: 1px;
+    }
+
+    /* Social Icons - Initially disable pointer events to avoid blocking drag */
+    .social-icons {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      pointer-events: none; /* Added to ensure splash drag isn't blocked */
+    }
+    .social-icons a {
+      color: var(--text-color);
+      font-size: 1.1rem;
+      transition: color var(--transition-speed);
+      text-decoration: none;
+    }
+    .social-icons a:hover {
+      color: var(--accent-color);
+    }
+
+    .email {
+      font-size: 0.9rem;
+      color: var(--text-color);
+      opacity: 0.8;
+      margin-left: 10px;
+      text-decoration: none;
+      border: 1px solid var(--accent-color);
+      padding: 3px 6px;
+      border-radius: 4px;
+      transition: background var(--transition-speed), color var(--transition-speed);
+    }
+
+    .email:hover {
+      background: var(--accent-color);
+      color: #000;
     }
 
     /* Hero */
@@ -1249,6 +1380,7 @@
       margin: 5px 0;
     }
 
+    /* Additional styles for arrow or adjustments can be added if needed */
   </style>
 </head>
 <body>
@@ -1261,8 +1393,8 @@
   <!-- Mainframe Intro Overlay -->
   <div class="mainframe-intro" id="mainframeIntro">
     <div>
-      <p>Welcome!</p>
-      <p>Transitioning to personal blog.</p>
+      <p>Access Granted...</p>
+      <p>Uploading into Mainframe...</p>
     </div>
   </div>
 
@@ -1273,7 +1405,7 @@
   <div class="splash" id="splash">
     <div class="splash-logo-container">
       <img src="images/raven-logo.png" alt="Raven Logo" class="splash-logo"/>
-      <p class="tagline">Resources for cybersecurity</p>
+      <p class="tagline">Unmasking Digital Threats</p>
     </div>
     <div class="splash-drag-overlay" id="splashDragOverlay">
       <div class="drag-handle"></div>
@@ -1284,19 +1416,20 @@
   <!-- Header -->
   <header>
     <nav>
-      <div class="logo"><#JustWats</div>
-      <ul>
-        <li><a href="#featured">Featured</a></li>
-        <li><a href="#recent">Recent</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="https://github.com/JustWats" target="_blank" rel="noopener noreferrer">GitHub</a></li>
-      </ul>
+      <div class="logo">Justin Watson</div>
+      <div class="social-icons">
+        <a href="https://bsky.app/profile/justwats.com" target="_blank" rel="noopener noreferrer" title="BlueSky"><i class="fas fa-cloud"></i></a>
+        <a href="https://mastodon.social/@JustWats" target="_blank" rel="noopener noreferrer" title="Mastodon"><i class="fab fa-mastodon"></i></a>
+        <a href="https://github.com/JustWats" target="_blank" rel="noopener noreferrer" title="GitHub"><i class="fab fa-github"></i></a>
+        <a href="https://www.linkedin.com/in/justwats" target="_blank" rel="noopener noreferrer" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a class="email" href="mailto:mail@justwats.com">mail@justwats.com</a>
+      </div>
     </nav>
   </header>
 
   <!-- Hero -->
   <section class="hero">
-    <h1 data-text="Personal Blog"><PersonalBlog></h1>
+    <h1 data-text="<#JustWats>"><#JustWats></h1>
     <p>Quick insights on Digital Forensics, Incident Response, Threat Hunting, and Malware Analysis.</p>
   </section>
 
@@ -1363,6 +1496,7 @@
     const splashDragOverlay = document.getElementById('splashDragOverlay');
     const introAudio = document.getElementById('introAudio');
     const mainframeIntro = document.getElementById('mainframeIntro');
+    const socialIcons = document.querySelector('.social-icons');
 
     let startY = 0;
     let currentY = 0;
@@ -1428,6 +1562,9 @@
           document.querySelector('.hero').classList.add('loaded');
           document.querySelector('main').classList.add('loaded');
           document.querySelector('footer').classList.add('loaded');
+
+          // Restore social icons interactivity after intro
+          socialIcons.style.pointerEvents = 'auto';
         }, 1000); // wait a second before removing intro completely
       }, 1500); // show mainframe intro text for 1.5s
     }
