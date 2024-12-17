@@ -45,12 +45,6 @@
       position: relative;
     }
 
-    /* Layering for background elements:
-       body::before at z-index:-3
-       body::after at z-index:-2 (scan lines)
-       .network-nodes at z-index:-1 (above scan lines)
-    */
-
     body::before {
       content: "";
       position: fixed;
@@ -127,7 +121,6 @@
       cursor: grab;
     }
 
-    /* Logo and tagline centered and not moving */
     .splash-logo-container {
       position: absolute;
       top: 50%; left: 50%;
@@ -178,7 +171,6 @@
       100% { opacity: 0; }
     }
 
-    /* Drag overlay from bottom */
     .splash-drag-overlay {
       position: absolute;
       bottom: 0; left: 0; right: 0;
@@ -289,7 +281,6 @@
       overflow: hidden;
     }
 
-    /* Glitch effect on hero title (now using <#JustWats) */
     .hero h1::before, .hero h1::after {
       content: attr(data-text);
       position: absolute;
@@ -438,14 +429,13 @@
   </style>
 </head>
 <body>
-  <!-- Network nodes behind everything -->
   <div class="network-nodes">
     <div class="node" style="top:20%; left:30%; animation-delay: 1s;"></div>
     <div class="node" style="top:50%; left:70%; animation-delay: 2s;"></div>
     <div class="node" style="top:80%; left:40%; animation-delay: 3s;"></div>
   </div>
 
-  <!-- Audio Element (attempts to play immediately) -->
+  <!-- Audio Element -->
   <audio id="introAudio" src="https://files.catbox.moe/4e75y2.mp3" preload="auto" loop></audio>
 
   <!-- Splash Screen -->
@@ -546,18 +536,23 @@
     let startY = 0;
     let currentY = 0;
     let isDragging = false;
+    let audioStarted = false;
     const threshold = 100; // Distance the user must drag upward to unlock
 
-    document.addEventListener('DOMContentLoaded', () => {
-      introAudio.play().catch(err => {
-        console.log("Autoplay blocked. Will play on interaction:", err);
-      });
-    });
+    // Remove attempt to play on DOMContentLoaded to rely on user interaction
+    // The first user interaction (pointer down) will attempt to play audio.
+    // This is necessary due to autoplay policies.
 
     function onPointerDown(e) {
       isDragging = true;
       startY = e.touches ? e.touches[0].clientY : e.clientY;
       splashDragOverlay.style.transition = 'none';
+
+      // Attempt to play audio on interaction if not already started
+      if (!audioStarted) {
+        audioStarted = true;
+        introAudio.play().catch(err => console.log("Audio start blocked:", err));
+      }
     }
 
     function onPointerMove(e) {
