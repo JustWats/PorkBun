@@ -10,17 +10,13 @@
   <meta name="keywords" content="DFIR, Cybersecurity, Threat Hunting, Malware Analysis, Incident Response" />
 
   <!-- Page Title -->
-  <title>Justin Watson's InfoSec Blog</title>
+  <title>Justin Watson's Cybersecurity Insights</title>
   
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
   
   <!-- Favicon (Optional) -->
   <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  <link rel="manifest" href="/site.webmanifest">
 
   <style>
     :root {
@@ -74,57 +70,67 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-end;
       text-align: center;
       overflow: hidden;
+      cursor: grab;
+    }
+
+    .splash-content {
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      text-align: center;
+      padding: 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      width: 100%;
+      box-sizing: border-box;
+      transition: transform 0.3s ease, opacity 0.3s ease;
     }
 
     .splash-logo {
-      width: 120px;
-      margin-bottom: 20px;
-      opacity: 0.8;
-      animation: rotateLogo 6s linear infinite;
+      width: 100px;
+      margin: 20px auto;
+      opacity: 0.9;
+      animation: pulse 2s infinite alternate ease-in-out;
     }
 
-    @keyframes rotateLogo {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.05); }
+    }
+
+    /* On hover: slight glitch/wobble effect */
+    .splash-logo:hover {
+      animation: glitchWobble 0.5s infinite alternate;
+    }
+
+    @keyframes glitchWobble {
+      0% { transform: translate(0,0) scale(1); }
+      50% { transform: translate(-2px, 1px) scale(1.02) skewX(1deg); }
+      100% { transform: translate(2px, -1px) scale(1.02) skewX(-1deg); }
     }
 
     .splash-text {
       color: var(--accent-color);
-      margin-bottom: 10px;
-      font-size: 1.1rem;
+      font-size: 1rem;
       letter-spacing: 1px;
+      margin-bottom: 10px;
     }
 
     .splash-instruction {
       color: #aaa;
       font-size: 0.9rem;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
     }
 
-    .splash:hover {
-      cursor: pointer;
+    .drag-handle {
+      width: 40px;
+      height: 4px;
+      background: var(--accent-color);
+      border-radius: 2px;
+      margin: 0 auto 10px auto;
     }
 
-    .arrow-indicator {
-      width: 30px;
-      height: 30px;
-      border-left: 2px solid var(--accent-color);
-      border-bottom: 2px solid var(--accent-color);
-      transform: rotate(-45deg);
-      animation: bounce 2s infinite;
-      margin-top: 20px;
-      opacity: 0.7;
-    }
-
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0) rotate(-45deg); }
-      50% { transform: translateY(-10px) rotate(-45deg); }
-    }
-
-    /* Audio Element hidden */
     #introAudio {
       display: none;
     }
@@ -356,15 +362,17 @@
   </style>
 </head>
 <body>
-  <!-- Audio Element (will start when user interacts with splash) -->
+  <!-- Audio Element (attempts to play immediately) -->
   <audio id="introAudio" src="https://files.catbox.moe/4e75y2.mp3" preload="auto" loop></audio>
 
   <!-- Splash Screen -->
   <div class="splash" id="splash">
-    <img src="images/raven-logo.png" alt="Logo" class="splash-logo"/>
-    <p class="splash-text">Enter the Forensic Domain</p>
-    <p class="splash-instruction">Hover or Tap to Begin Audio</p>
-    <div class="arrow-indicator"></div>
+    <div class="splash-content" id="splashContent">
+      <div class="drag-handle"></div>
+      <img src="images/raven-logo.png" alt="Logo" class="splash-logo"/>
+      <p class="splash-text">Enter the Forensic Domain</p>
+      <p class="splash-instruction">Drag Up to Unlock</p>
+    </div>
   </div>
 
   <!-- Header -->
@@ -396,7 +404,7 @@
           <img src="https://images.unsplash.com/photo-1518779578993-ec3579fee39c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1050&q=80" alt="Featured Post Image" />
           <div class="post-content">
             <h3>Track Attackers Fast</h3>
-            <p>Simple steps to detect hidden threats and isolate malicious activity.</p>
+            <p>Detect hidden threats and isolate malicious activity.</p>
             <a href="#" class="read-more">Read</a>
           </div>
         </article>
@@ -411,7 +419,7 @@
           <img src="https://images.unsplash.com/photo-1625775707287-c72307dd8644?ixlib=rb-4.0.3&auto=format&fit=crop&w=1050&q=80" alt="Recent Post Image" />
           <div class="post-content">
             <h3>Memory Forensics Basics</h3>
-            <p>Quick tips to uncover malicious traces in memory.</p>
+            <p>Find malicious footprints in RAM quickly.</p>
             <a href="#" class="read-more">Read</a>
           </div>
         </article>
@@ -420,7 +428,7 @@
           <img src="https://images.unsplash.com/photo-1584433144859-4697f63a1ebc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1050&q=80" alt="Recent Post Image" />
           <div class="post-content">
             <h3>Malware Behavior Tips</h3>
-            <p>Identify key patterns and disrupt harmful code.</p>
+            <p>Spot patterns and disrupt harmful code.</p>
             <a href="#" class="read-more">Read</a>
           </div>
         </article>
@@ -431,7 +439,7 @@
     <section id="about">
       <h2 class="section-title">About</h2>
       <p>
-        I’m Justin Watson, focusing on forensics, response, and hunting. I share brief, actionable insights to help you spot threats and respond quickly.
+        I’m Justin Watson, sharing brief, practical insights to help you discover, analyze, and respond to cyber threats.
       </p>
     </section>
   </main>
@@ -447,33 +455,67 @@
 
   <script>
     const splash = document.getElementById('splash');
+    const splashContent = document.getElementById('splashContent');
     const introAudio = document.getElementById('introAudio');
-    let audioStarted = false;
 
-    // Attempt to start audio on user interaction with splash
-    function startAudio() {
-      if (!audioStarted) {
-        audioStarted = true;
-        introAudio.play().catch(err => console.log("Audio start prevented:", err));
+    let startY = 0;
+    let currentY = 0;
+    let isDragging = false;
+    let threshold = 100; // how far user must drag up to unlock
+
+    // Attempt to play audio on DOMContentLoaded
+    document.addEventListener('DOMContentLoaded', () => {
+      introAudio.play().catch(err => {
+        console.log("Autoplay blocked:", err);
+      });
+    });
+
+    function onPointerDown(e) {
+      isDragging = true;
+      startY = e.touches ? e.touches[0].clientY : e.clientY;
+      splashContent.style.transition = 'none';
+    }
+
+    function onPointerMove(e) {
+      if (!isDragging) return;
+      currentY = e.touches ? e.touches[0].clientY : e.clientY;
+      const diff = startY - currentY;
+      if (diff > 0) {
+        splashContent.style.transform = `translateY(-${diff}px)`;
+        splashContent.style.opacity = Math.max(1 - diff/300, 0.5);
       }
     }
 
-    splash.addEventListener('mouseover', startAudio);
-    splash.addEventListener('touchstart', startAudio, {passive: true});
+    function onPointerUp() {
+      if (!isDragging) return;
+      isDragging = false;
+      const diff = startY - currentY;
+      splashContent.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
 
-    // Clicking the splash screen removes it and stops audio
-    splash.addEventListener('click', () => {
-      introAudio.pause();
-      introAudio.currentTime = 0;
-      splash.style.opacity = '0';
-      setTimeout(() => {
-        splash.style.display = 'none';
-      }, 500);
-    });
+      if (diff > threshold) {
+        // Unlock
+        introAudio.pause();
+        introAudio.currentTime = 0;
+        splash.style.opacity = '0';
+        setTimeout(() => {
+          splash.style.display = 'none';
+        }, 500);
+      } else {
+        // Restore if not dragged enough
+        splashContent.style.transform = 'translateY(0)';
+        splashContent.style.opacity = '1';
+      }
+    }
 
-    // Hover/click interactions are simplified. 
-    // If you want a swipe/drag gesture, implement similar logic as before.
+    // Event listeners for mouse and touch
+    splashContent.addEventListener('mousedown', onPointerDown);
+    splashContent.addEventListener('mousemove', onPointerMove);
+    splashContent.addEventListener('mouseup', onPointerUp);
+    splashContent.addEventListener('mouseleave', onPointerUp);
 
+    splashContent.addEventListener('touchstart', onPointerDown, {passive: true});
+    splashContent.addEventListener('touchmove', onPointerMove, {passive: true});
+    splashContent.addEventListener('touchend', onPointerUp);
   </script>
 </body>
 </html>
