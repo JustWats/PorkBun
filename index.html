@@ -249,6 +249,14 @@
     .intro-network .node:nth-child(4) { top:40%; left:80%; animation-delay:2s;}
     .intro-network .node:nth-child(5) { top:60%; left:20%; animation-delay:2.5s;}
 
+    @keyframes fadeNode {
+      0% { opacity: 0; transform: scale(0.5); }
+      20% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 0.5; }
+      80% { opacity: 0.3; transform: scale(1); }
+      100% { opacity: 0; transform: scale(0.5); }
+    }
+
     .mainframe-intro p {
       position: relative;
       z-index: 3;
@@ -346,7 +354,7 @@
       color: #000;
     }
 
-    /* Hero (trippy effect removed) */
+    /* Hero */
     .hero {
       position: relative;
       min-height: 60vh;
@@ -358,8 +366,6 @@
       padding: 0 20px;
       overflow: hidden;
     }
-
-    /* Removed .hero::before and rotateConic */
 
     .hero h1, .hero p {
       position: relative;
@@ -569,8 +575,8 @@
     </div>
   </div>
 
-  <!-- Audio Element -->
-  <audio id="introAudio" src="https://files.catbox.moe/4e75y2.mp3" preload="auto" loop></audio>
+  <!-- Audio Elements (We won't show them, but we will load them and pick randomly) -->
+  <audio id="introAudio" preload="auto" loop></audio>
 
   <!-- Splash Screen -->
   <div class="splash" id="splash">
@@ -697,7 +703,13 @@
     let audioStarted = false;
     const threshold = 100; 
 
-    // Typewriter Effect
+    // Array of songs
+    const songs = [
+      "https://files.catbox.moe/4e75y2.mp3",
+      "https://files.catbox.moe/gyhnmf.mp3",
+      "https://files.catbox.moe/i0zvrf.mp3"
+    ];
+
     function typeWriter(element, text, speed=50, callback) {
       let index = 0;
       const interval = setInterval(() => {
@@ -712,7 +724,6 @@
     }
 
     function runMainframeIntro() {
-      // Show mainframe intro overlay
       mainframeIntro.style.opacity = '1';
       mainframeIntro.style.transition = 'opacity 0.5s ease';
 
@@ -746,8 +757,12 @@
       startY = e.touches ? e.touches[0].clientY : e.clientY;
       splashDragOverlay.style.transition = 'none';
 
+      // Start audio on first interaction if not started
       if (!audioStarted) {
         audioStarted = true;
+        // Pick a random song
+        const randomSong = songs[Math.floor(Math.random() * songs.length)];
+        introAudio.src = randomSong;
         introAudio.play().catch(err => console.log("Audio start blocked:", err));
       }
     }
@@ -824,15 +839,9 @@
           y: Math.random() * height,
           vx: (Math.random() - 0.5) * SPEED,
           vy: (Math.random() - 0.5) * SPEED,
-          color: varColor()
+          color: "#48a9a6"
         });
       }
-    }
-
-    // Generate a node color close to accent color #48a9a6
-    // We'll keep them all the same accent color for uniformity.
-    function varColor() {
-      return "#48a9a6"; 
     }
 
     function draw() {
