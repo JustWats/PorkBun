@@ -45,14 +45,19 @@
       position: relative;
     }
 
-    /* Animated background elements */
+    /* Layering for background elements:
+       body::before at z-index:-3
+       body::after at z-index:-2 (scan lines)
+       .network-nodes at z-index:-1 (above scan lines)
+    */
+
     body::before {
       content: "";
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
+      z-index: -3;
       background: radial-gradient(circle at 30% 50%, rgba(72,169,166,0.05), transparent 40%), 
                   radial-gradient(circle at 70% 50%, rgba(72,169,166,0.05), transparent 40%);
-      z-index: -2;
       animation: backgroundFloat 10s ease-in-out infinite alternate;
     }
 
@@ -76,7 +81,7 @@
       );
       mix-blend-mode: overlay;
       opacity: 0.1;
-      z-index: -1;
+      z-index: -2;
       animation: scanFlicker 8s infinite alternate ease-in-out;
     }
 
@@ -86,7 +91,6 @@
       100% { opacity: 0.1; }
     }
 
-    /* Network nodes container */
     .network-nodes {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -119,26 +123,20 @@
       background: rgba(0,0,0,0.6);
       backdrop-filter: blur(4px);
       z-index: 9999;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-end;
-      text-align: center;
       overflow: hidden;
       cursor: grab;
     }
 
-    .splash-content {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 40px 20px;
+    /* Logo and tagline centered and not moving */
+    .splash-logo-container {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
       text-align: center;
-      transition: transform 0.3s ease, opacity 0.3s ease;
     }
 
     .splash-logo {
       width: 100px;
-      margin: 0 auto 20px auto;
       opacity: 0.9;
       animation: pulse 2s infinite alternate ease-in-out;
     }
@@ -158,19 +156,11 @@
       100% { transform: translate(2px, -1px) scale(1.02) skewX(-1deg); }
     }
 
-    .splash-text {
-      color: var(--accent-color);
-      font-size: 1rem;
-      letter-spacing: 1px;
-      margin-bottom: 10px;
-    }
-
-    /* Tagline that glitches */
     .tagline {
       color: #aaa;
       font-size: 0.8rem;
       letter-spacing: 1px;
-      margin-bottom: 20px;
+      margin-top: 10px;
       opacity: 0;
       position: relative;
       animation: glitchTagline 3s forwards;
@@ -188,10 +178,19 @@
       100% { opacity: 0; }
     }
 
-    .splash-instruction {
-      color: #aaa;
-      font-size: 0.9rem;
-      margin-bottom: 20px;
+    /* Drag overlay from bottom */
+    .splash-drag-overlay {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 50%;
+      background: transparent;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 40px 20px;
+      box-sizing: border-box;
+      transition: transform 0.3s ease, opacity 0.3s ease;
     }
 
     .drag-handle {
@@ -199,7 +198,13 @@
       height: 4px;
       background: var(--accent-color);
       border-radius: 2px;
-      margin: 0 auto 20px auto;
+      margin-bottom: 20px;
+    }
+
+    .splash-instruction {
+      color: #aaa;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
     }
 
     #introAudio {
@@ -284,7 +289,7 @@
       overflow: hidden;
     }
 
-    /* Light glitch effect on hero title */
+    /* Glitch effect on hero title (now using <#JustWats) */
     .hero h1::before, .hero h1::after {
       content: attr(data-text);
       position: absolute;
@@ -445,11 +450,12 @@
 
   <!-- Splash Screen -->
   <div class="splash" id="splash">
-    <div class="splash-content" id="splashContent">
-      <div class="drag-handle"></div>
+    <div class="splash-logo-container">
       <img src="images/raven-logo.png" alt="Raven Logo" class="splash-logo"/>
-      <p class="splash-text">Enter the Forensic Domain</p>
       <p class="tagline">Unmasking Digital Threats</p>
+    </div>
+    <div class="splash-drag-overlay" id="splashDragOverlay">
+      <div class="drag-handle"></div>
       <p class="splash-instruction">Drag Up to Unlock</p>
     </div>
   </div>
@@ -457,7 +463,7 @@
   <!-- Header -->
   <header>
     <nav>
-      <div class="logo"><#JustWats</div>
+      <div class="logo">Justin Watson</div>
       <ul>
         <li><a href="#featured">Featured</a></li>
         <li><a href="#recent">Recent</a></li>
@@ -469,7 +475,7 @@
 
   <!-- Hero -->
   <section class="hero">
-    <h1 data-text="DFIR & THREAT HUNTING">DFIR & THREAT HUNTING</h1>
+    <h1 data-text="<#JustWats>"><#JustWats></h1>
     <p>Quick insights on Digital Forensics, Incident Response, Threat Hunting, and Malware Analysis.</p>
   </section>
 
@@ -534,7 +540,7 @@
 
   <script>
     const splash = document.getElementById('splash');
-    const splashContent = document.getElementById('splashContent');
+    const splashDragOverlay = document.getElementById('splashDragOverlay');
     const introAudio = document.getElementById('introAudio');
 
     let startY = 0;
@@ -551,7 +557,7 @@
     function onPointerDown(e) {
       isDragging = true;
       startY = e.touches ? e.touches[0].clientY : e.clientY;
-      splashContent.style.transition = 'none';
+      splashDragOverlay.style.transition = 'none';
     }
 
     function onPointerMove(e) {
@@ -559,8 +565,8 @@
       currentY = e.touches ? e.touches[0].clientY : e.clientY;
       const diff = startY - currentY;
       if (diff > 0) {
-        splashContent.style.transform = `translateY(-${diff}px)`;
-        splashContent.style.opacity = Math.max(1 - diff/300, 0.5);
+        splashDragOverlay.style.transform = `translateY(-${diff}px)`;
+        splashDragOverlay.style.opacity = Math.max(1 - diff/300, 0.5);
       }
     }
 
@@ -568,7 +574,7 @@
       if (!isDragging) return;
       isDragging = false;
       const diff = startY - currentY;
-      splashContent.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+      splashDragOverlay.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
 
       if (diff > threshold) {
         // Unlock: Stop audio, remove splash
@@ -580,20 +586,20 @@
         }, 500);
       } else {
         // Not enough drag, restore
-        splashContent.style.transform = 'translateY(0)';
-        splashContent.style.opacity = '1';
+        splashDragOverlay.style.transform = 'translateY(0)';
+        splashDragOverlay.style.opacity = '1';
       }
     }
 
     // Event listeners for mouse and touch
-    splashContent.addEventListener('mousedown', onPointerDown);
-    splashContent.addEventListener('mousemove', onPointerMove);
-    splashContent.addEventListener('mouseup', onPointerUp);
-    splashContent.addEventListener('mouseleave', onPointerUp);
+    splashDragOverlay.addEventListener('mousedown', onPointerDown);
+    splashDragOverlay.addEventListener('mousemove', onPointerMove);
+    splashDragOverlay.addEventListener('mouseup', onPointerUp);
+    splashDragOverlay.addEventListener('mouseleave', onPointerUp);
 
-    splashContent.addEventListener('touchstart', onPointerDown, {passive: true});
-    splashContent.addEventListener('touchmove', onPointerMove, {passive: true});
-    splashContent.addEventListener('touchend', onPointerUp);
+    splashDragOverlay.addEventListener('touchstart', onPointerDown, {passive: true});
+    splashDragOverlay.addEventListener('touchmove', onPointerMove, {passive: true});
+    splashDragOverlay.addEventListener('touchend', onPointerUp);
   </script>
 </body>
 </html>
