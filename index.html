@@ -60,7 +60,7 @@
       100% { transform: translateY(-20px); }
     }
 
-    /* Global CRT Overlay */
+    /* CRT Overlay */
     .crt-overlay {
       pointer-events: none;
       position: fixed;
@@ -108,29 +108,11 @@
       100% { opacity: 0.1; }
     }
 
-    .network-nodes {
+    /* Plexus Canvas */
+    #plexusCanvas {
       position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      pointer-events: none;
-      overflow: hidden;
+      top:0; left:0; width:100%; height:100%;
       z-index: -1;
-    }
-
-    .node {
-      position: absolute;
-      width: 6px; height: 6px;
-      background: var(--accent-color);
-      border-radius: 50%;
-      opacity: 0;
-      animation: fadeNode 5s infinite;
-    }
-
-    @keyframes fadeNode {
-      0% { opacity: 0; transform: scale(0.5); }
-      20% { opacity: 0.3; transform: scale(1); }
-      50% { opacity: 0.5; }
-      80% { opacity: 0.3; transform: scale(1); }
-      100% { opacity: 0; transform: scale(0.5); }
     }
 
     /* Splash Screen */
@@ -226,7 +208,7 @@
       display: none;
     }
 
-    /* Mainframe Intro Transition */
+    /* Mainframe Intro */
     .mainframe-intro {
       position: fixed;
       inset: 0;
@@ -364,7 +346,7 @@
       color: #000;
     }
 
-    /* Hero with Trippy Animated Background */
+    /* Hero */
     .hero {
       position: relative;
       min-height: 60vh;
@@ -377,7 +359,6 @@
       overflow: hidden;
     }
 
-    /* Conic gradient that rotates to create a trippy effect */
     .hero::before {
       content: "";
       position: absolute;
@@ -580,14 +561,11 @@
   </style>
 </head>
 <body>
+  <!-- Plexus Canvas -->
+  <canvas id="plexusCanvas"></canvas>
+
   <!-- CRT Overlay -->
   <div class="crt-overlay"></div>
-
-  <div class="network-nodes">
-    <div class="node" style="top:20%; left:30%; animation-delay: 1s;"></div>
-    <div class="node" style="top:50%; left:70%; animation-delay: 2s;"></div>
-    <div class="node" style="top:80%; left:40%; animation-delay: 3s;"></div>
-  </div>
 
   <!-- Mainframe Intro Overlay -->
   <div class="mainframe-intro" id="mainframeIntro">
@@ -846,6 +824,87 @@
     splashDragOverlay.addEventListener('touchstart', onPointerDown, {passive: true});
     splashDragOverlay.addEventListener('touchmove', onPointerMove, {passive: true});
     splashDragOverlay.addEventListener('touchend', onPointerUp);
+
+    // Plexus Animation
+    const plexusCanvas = document.getElementById('plexusCanvas');
+    const ctx = plexusCanvas.getContext('2d');
+    let width = plexusCanvas.width = window.innerWidth;
+    let height = plexusCanvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      width = plexusCanvas.width = window.innerWidth;
+      height = plexusCanvas.height = window.innerHeight;
+      initNodes();
+    });
+
+    const NUM_NODES = 50;
+    const MAX_DISTANCE = 150; 
+    const SPEED = 0.3;
+    const nodes = [];
+
+    function initNodes() {
+      nodes.length = 0;
+      for (let i = 0; i < NUM_NODES; i++) {
+        nodes.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * SPEED,
+          vy: (Math.random() - 0.5) * SPEED,
+          color: `hsl(${Math.random()*360},60%,60%)`
+        });
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, width, height);
+
+      // Move nodes
+      for (let i = 0; i < NUM_NODES; i++) {
+        let node = nodes[i];
+        node.x += node.vx;
+        node.y += node.vy;
+
+        // Bounce off edges
+        if (node.x < 0 || node.x > width) node.vx = -node.vx;
+        if (node.y < 0 || node.y > height) node.vy = -node.vy;
+      }
+
+      // Draw lines
+      for (let i = 0; i < NUM_NODES; i++) {
+        for (let j = i+1; j < NUM_NODES; j++) {
+          let dx = nodes[i].x - nodes[j].x;
+          let dy = nodes[i].y - nodes[j].y;
+          let dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < MAX_DISTANCE) {
+            let alpha = 1 - dist / MAX_DISTANCE;
+            ctx.strokeStyle = `rgba(72,169,166,${alpha})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Draw nodes
+      for (let i = 0; i < NUM_NODES; i++) {
+        let node = nodes[i];
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, 3, 0, Math.PI*2);
+        ctx.fillStyle = node.color;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = node.color;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    initNodes();
+    draw();
+
   </script>
 </body>
 </html>
