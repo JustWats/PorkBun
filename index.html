@@ -22,13 +22,11 @@
     :root {
       --bg-color: #121212;
       --text-color: #cccccc;
-      --accent-color: #4db6ac; /* Subtle teal accent */
+      --accent-color: #4db6ac; 
       --card-bg: #1c1c1c;
       --heading-color: #ffffff;
       --link-color: #4db6ac;
       --transition-speed: 0.3s;
-      font-synthesis: none;
-      text-rendering: optimizeLegibility;
     }
 
     * {
@@ -42,6 +40,92 @@
       font-family: 'Orbitron', sans-serif;
       color: var(--text-color);
       line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Splash Overlay */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 9999;
+      text-align: center;
+    }
+
+    .overlay-content {
+      color: var(--text-color);
+      padding: 20px;
+    }
+
+    .overlay h2 {
+      color: var(--accent-color);
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+
+    .shape-container {
+      width: 150px;
+      height: 150px;
+      margin: 20px auto;
+      position: relative;
+    }
+
+    /* Example ambiguous shapes */
+    /* We'll have a few shape classes and pick one at random */
+    .shape {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+    }
+
+    .shape.triangle {
+      width: 0;
+      height: 0;
+      border-left: 75px solid transparent;
+      border-right: 75px solid transparent;
+      border-bottom: 150px solid var(--accent-color);
+    }
+
+    .shape.circle {
+      border-radius: 50%;
+      background: var(--accent-color);
+    }
+
+    .shape.hexagon {
+      width: 86.6px;
+      height: 150px;
+      background: var(--accent-color);
+      margin: 0 auto;
+      clip-path: polygon(
+        50% 0%, 
+        100% 25%, 
+        100% 75%, 
+        50% 100%, 
+        0% 75%, 
+        0% 25%
+      );
+      position: relative;
+      left: 32px; /* To center hex due to width difference */
+    }
+
+    .overlay button {
+      border: 1px solid var(--accent-color);
+      background: transparent;
+      color: var(--accent-color);
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background var(--transition-speed), color var(--transition-speed);
+    }
+
+    .overlay button:hover {
+      background: var(--accent-color);
+      color: #000;
     }
 
     header {
@@ -71,10 +155,6 @@
       list-style: none;
       display: flex;
       gap: 30px;
-    }
-
-    header ul li {
-      display: inline-block;
     }
 
     header ul li a {
@@ -233,6 +313,22 @@
   </style>
 </head>
 <body>
+  <!-- Audio Element -->
+  <audio id="introAudio" src="https://files.catbox.moe/4e75y2.mp3" preload="auto"></audio>
+
+  <!-- Splash Overlay -->
+  <div class="overlay" id="overlay">
+    <div class="overlay-content">
+      <h2>Welcome</h2>
+      <div class="shape-container">
+        <!-- The shape will be inserted here dynamically -->
+        <div class="shape" id="randomShape"></div>
+      </div>
+      <p>Click Enter to Begin</p>
+      <button id="enterButton">Enter</button>
+    </div>
+  </div>
+
   <!-- Header -->
   <header>
     <nav>
@@ -267,8 +363,6 @@
             <a href="posts/understanding-zero-day.html" class="read-more">Read More</a>
           </div>
         </article>
-        
-        <!-- Add more featured posts as needed -->
       </div>
     </section>
 
@@ -293,8 +387,6 @@
             <a href="posts/network-intrusion-detection.html" class="read-more">Read More</a>
           </div>
         </article>
-        
-        <!-- Add more recent posts as needed -->
       </div>
     </section>
 
@@ -302,7 +394,7 @@
     <section id="about">
       <h2 class="section-title">About Me</h2>
       <p>
-        I’m Justin Watson, a cybersecurity researcher and analyst dedicated to helping others navigate the ever-shifting digital security landscape. 
+        I’m Justin Watson, a cybersecurity researcher and analyst dedicated to helping others navigate the ever-shifting digital security landscape.
         Through this blog, I share insights on advanced defense tactics, emerging vulnerabilities, secure coding methodologies, 
         and real-world case studies. Join me as we explore the cutting edge of cybersecurity and work to keep the digital world secure.
       </p>
@@ -317,5 +409,25 @@
       document.getElementById('year').textContent = new Date().getFullYear();
     </script>
   </footer>
+
+  <script>
+    // Random shape generation
+    const shapes = ['triangle', 'circle', 'hexagon'];
+    const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
+    document.getElementById('randomShape').classList.add(randomShape);
+
+    // Handle overlay interaction
+    const overlay = document.getElementById('overlay');
+    const enterButton = document.getElementById('enterButton');
+    const introAudio = document.getElementById('introAudio');
+
+    enterButton.addEventListener('click', () => {
+      overlay.style.display = 'none';
+      // Play audio after user interaction
+      introAudio.play().catch(err => {
+        console.log("Autoplay prevented: " + err);
+      });
+    });
+  </script>
 </body>
 </html>
