@@ -277,7 +277,6 @@
       display: inline-block;
     }
 
-    /* We'll glitch text after typewriter finishes */
     .glitch {
       animation: glitchText 3s infinite;
     }
@@ -545,6 +544,31 @@
       margin: 5px 0;
     }
 
+    .footer-socials {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .footer-socials a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: filter var(--transition-speed);
+    }
+
+    .footer-socials a img {
+      width: 20px;
+      height: 20px;
+      filter: brightness(0.8);
+    }
+
+    .footer-socials a:hover img {
+      filter: brightness(1);
+    }
+
   </style>
 </head>
 <body>
@@ -595,7 +619,6 @@
         <li><a href="#featured">Featured</a></li>
         <li><a href="#recent">Recent</a></li>
         <li><a href="#about">About</a></li>
-        <li><a href="https://github.com/JustWats" target="_blank" rel="noopener noreferrer">GitHub</a></li>
       </ul>
       <div class="audio-toggle">
         <button id="audioToggle">Pause Music</button>
@@ -662,6 +685,25 @@
   <!-- Footer -->
   <footer>
     <p>&copy; <span id="year"></span> Justin Watson. All rights reserved.</p>
+
+    <div class="footer-socials">
+      <a href="https://bsky.app/profile/justwats.com" target="_blank" rel="noopener noreferrer">
+        <img src="/images/bluesky-svgrepo-com.svg" alt="Bluesky">
+      </a>
+      <a href="https://mastodon.social/@JustWats" target="_blank" rel="noopener noreferrer">
+        <img src="/images/mastodon-svgrepo-com.svg" alt="Mastodon">
+      </a>
+      <a href="https://github.com/JustWats" target="_blank" rel="noopener noreferrer">
+        <img src="/images/github-svgrepo-com.svg" alt="GitHub">
+      </a>
+      <a href="https://www.linkedin.com/in/justwats" target="_blank" rel="noopener noreferrer">
+        <img src="/images/linkedin-svgrepo-com.svg" alt="LinkedIn">
+      </a>
+      <a href="mailto:mail@justwats.com">
+        <img src="/images/email-svgrepo-com.svg" alt="Email">
+      </a>
+    </div>
+
     <script>
       document.getElementById('year').textContent = new Date().getFullYear();
     </script>
