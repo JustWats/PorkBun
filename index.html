@@ -20,12 +20,12 @@
 
   <style>
     :root {
-      --bg-color: #121212;
-      --text-color: #cccccc;
-      --accent-color: #4db6ac; 
-      --card-bg: #1c1c1c;
-      --heading-color: #ffffff;
-      --link-color: #4db6ac;
+      --bg-color: #0a0a0a;
+      --text-color: #ccc;
+      --accent-color: #3aa19d; 
+      --card-bg: #1a1a1a;
+      --heading-color: #fff;
+      --link-color: #3aa19d;
       --transition-speed: 0.3s;
     }
 
@@ -47,69 +47,43 @@
     .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.7);
+      background: rgba(0,0,0,0.85);
       display: flex;
       align-items: center;
       justify-content: center;
       flex-direction: column;
       z-index: 9999;
       text-align: center;
+      animation: fadeIn var(--transition-speed) ease-in;
     }
 
     .overlay-content {
       color: var(--text-color);
       padding: 20px;
+      max-width: 90%;
+      animation: scaleUp 0.7s cubic-bezier(0.5, 1.25, 0.5, 1);
     }
 
     .overlay h2 {
       color: var(--accent-color);
       margin-bottom: 20px;
       font-size: 1.5rem;
+      letter-spacing: 2px;
     }
 
-    .shape-container {
+    .logo-container {
       width: 150px;
       height: 150px;
       margin: 20px auto;
       position: relative;
+      animation: rotateScale 5s infinite linear;
     }
 
-    /* Example ambiguous shapes */
-    /* We'll have a few shape classes and pick one at random */
-    .shape {
+    .logo-container img {
       width: 100%;
-      height: 100%;
-      position: absolute;
-    }
-
-    .shape.triangle {
-      width: 0;
-      height: 0;
-      border-left: 75px solid transparent;
-      border-right: 75px solid transparent;
-      border-bottom: 150px solid var(--accent-color);
-    }
-
-    .shape.circle {
-      border-radius: 50%;
-      background: var(--accent-color);
-    }
-
-    .shape.hexagon {
-      width: 86.6px;
-      height: 150px;
-      background: var(--accent-color);
-      margin: 0 auto;
-      clip-path: polygon(
-        50% 0%, 
-        100% 25%, 
-        100% 75%, 
-        50% 100%, 
-        0% 75%, 
-        0% 25%
-      );
-      position: relative;
-      left: 32px; /* To center hex due to width difference */
+      height: auto;
+      display: block;
+      opacity: 0.9;
     }
 
     .overlay button {
@@ -121,6 +95,8 @@
       border-radius: 4px;
       cursor: pointer;
       transition: background var(--transition-speed), color var(--transition-speed);
+      margin-top: 20px;
+      letter-spacing: 1px;
     }
 
     .overlay button:hover {
@@ -128,12 +104,29 @@
       color: #000;
     }
 
+    @keyframes scaleUp {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes rotateScale {
+      0% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.05) rotate(180deg); }
+      100% { transform: scale(1) rotate(360deg); }
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
     header {
       position: sticky;
       top: 0;
-      background: rgba(28, 28, 28, 0.9);
-      backdrop-filter: blur(5px);
+      background: rgba(10,10,10,0.95);
+      backdrop-filter: blur(3px);
       z-index: 1000;
+      border-bottom: 1px solid #222;
     }
 
     header nav {
@@ -149,6 +142,7 @@
       font-weight: 700;
       font-size: 1.5rem;
       color: var(--heading-color);
+      letter-spacing: 1px;
     }
 
     header ul {
@@ -170,8 +164,8 @@
 
     .hero {
       position: relative;
-      background: url('https://images.unsplash.com/photo-1619812996980-95b64013c8f7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80') no-repeat center center/cover;
-      min-height: 60vh;
+      background: url('https://images.unsplash.com/photo-1622755871820-f00a210b6f02?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80') no-repeat center center/cover;
+      min-height: 70vh;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -197,6 +191,27 @@
       color: var(--heading-color);
       font-size: 3rem;
       margin-bottom: 20px;
+      letter-spacing: 2px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Glitch text effect */
+    .hero h1::before, .hero h1::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+      text-shadow: -2px 0 var(--accent-color);
+      clip: rect(0, 900px, 0, 0);
+      animation: glitch 2s infinite ease-in-out alternate;
+    }
+
+    @keyframes glitch {
+      0% { clip: rect(0, 900px, 0, 0); }
+      25% { clip: rect(10px, 900px, 90px, 0); transform: translate(-3px, -3px); }
+      50% { clip: rect(5px, 900px, 10px, 0); transform: translate(3px, 3px); }
+      75% { clip: rect(20px, 900px, 60px, 0); transform: translate(-2px, -2px); }
+      100% { clip: rect(0, 900px, 0, 0); }
     }
 
     .hero p {
@@ -219,6 +234,7 @@
       border-bottom: 2px solid var(--accent-color);
       display: inline-block;
       padding-bottom: 10px;
+      letter-spacing: 1px;
     }
 
     .featured-posts, .recent-posts {
@@ -260,11 +276,13 @@
       font-size: 1.2rem;
       color: var(--heading-color);
       margin-bottom: 10px;
+      letter-spacing: 1px;
     }
 
     .post-content p {
       margin-bottom: 15px;
       font-size: 0.95rem;
+      color: var(--text-color);
     }
 
     .read-more {
@@ -277,6 +295,7 @@
       border: 1px solid var(--accent-color);
       border-radius: 3px;
       transition: background var(--transition-speed), color var(--transition-speed);
+      letter-spacing: 1px;
     }
 
     .read-more:hover {
@@ -287,15 +306,18 @@
     #about {
       margin-top: 60px;
       color: var(--text-color);
+      line-height: 1.8;
+      max-width: 800px;
     }
 
     footer {
-      background: #1a1a1a;
+      background: #0f0f0f;
       color: var(--text-color);
       text-align: center;
       padding: 20px;
       margin-top: 60px;
       font-size: 0.9rem;
+      border-top: 1px solid #222;
     }
 
     footer p {
@@ -319,20 +341,20 @@
   <!-- Splash Overlay -->
   <div class="overlay" id="overlay">
     <div class="overlay-content">
-      <h2>Welcome</h2>
-      <div class="shape-container">
-        <!-- The shape will be inserted here dynamically -->
-        <div class="shape" id="randomShape"></div>
+      <h2>Access Required</h2>
+      <div class="logo-container">
+        <!-- Replace with your own image. The provided image should be placed in your repo at 'images/lion-logo.png'. -->
+        <img src="images/lion-logo.png" alt="Ambiguous Lion Logo" />
       </div>
-      <p>Click Enter to Begin</p>
-      <button id="enterButton">Enter</button>
+      <p>Confirm your intent.</p>
+      <button id="enterButton">ENTER</button>
     </div>
   </div>
 
   <!-- Header -->
   <header>
     <nav>
-      <div class="logo">My Cybersecurity Blog</div>
+      <div class="logo">Justin Watson</div>
       <ul>
         <li><a href="#featured">Featured</a></li>
         <li><a href="#recent">Recent Posts</a></li>
@@ -344,8 +366,8 @@
 
   <!-- Hero -->
   <section class="hero">
-    <h1>Defend Your Digital Frontier</h1>
-    <p>Insights, tools, and strategies to stay ahead of the evolving cyber threat landscape.</p>
+    <h1 data-text="DEFEND YOUR DIGITAL FRONTIER">DEFEND YOUR DIGITAL FRONTIER</h1>
+    <p>Insights, tools, and strategies to outmaneuver the evolving cyber threat landscape.</p>
   </section>
 
   <!-- Main Content -->
@@ -354,12 +376,11 @@
     <section class="featured-posts" id="featured">
       <h2 class="section-title">Featured Posts</h2>
       <div class="posts-grid">
-        <!-- Example Featured Post -->
         <article class="post">
           <img src="https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1050&q=80" alt="Featured Post Image" />
           <div class="post-content">
             <h3>Cracking the Code of Zero-Day Exploits</h3>
-            <p>Uncover the mystery behind zero-days and learn how to identify emerging threats before they strike.</p>
+            <p>Uncover the hidden pathways of zero-days and learn to identify emerging threats before they breach your perimeter.</p>
             <a href="posts/understanding-zero-day.html" class="read-more">Read More</a>
           </div>
         </article>
@@ -374,7 +395,7 @@
           <img src="https://images.unsplash.com/photo-1601582592979-721ce50f0aad?ixlib=rb-4.0.3&auto=format&fit=crop&w=1050&q=80" alt="Recent Post Image" />
           <div class="post-content">
             <h3>Secure Coding Best Practices</h3>
-            <p>Integrate security into every step of your development pipeline and safeguard your apps from the inside out.</p>
+            <p>Weave security into every line of code, forging applications that withstand the harshest cyber onslaughts.</p>
             <a href="posts/secure-coding-best-practices.html" class="read-more">Read More</a>
           </div>
         </article>
@@ -383,7 +404,7 @@
           <img src="https://images.unsplash.com/photo-1565895405130-04c92d7bca85?ixlib=rb-4.0.3&auto=format&fit=crop&w=1050&q=80" alt="Recent Post Image" />
           <div class="post-content">
             <h3>Network Intrusion Detection 101</h3>
-            <p>A primer on setting up intrusion detection systems and analyzing suspicious network traffic patterns.</p>
+            <p>Map the neural pathways of your network traffic and spot malicious intent before it strikes.</p>
             <a href="posts/network-intrusion-detection.html" class="read-more">Read More</a>
           </div>
         </article>
@@ -392,18 +413,18 @@
 
     <!-- About Section -->
     <section id="about">
-      <h2 class="section-title">About Me</h2>
+      <h2 class="section-title">About</h2>
       <p>
-        I’m Justin Watson, a cybersecurity researcher and analyst dedicated to helping others navigate the ever-shifting digital security landscape.
-        Through this blog, I share insights on advanced defense tactics, emerging vulnerabilities, secure coding methodologies, 
-        and real-world case studies. Join me as we explore the cutting edge of cybersecurity and work to keep the digital world secure.
+        I’m Justin Watson, a cybersecurity strategist and researcher carving out a path through the shifting sands of digital warfare. 
+        Using deep analysis, advanced defense tactics, and real-world case studies, this blog unveils the subtle art of cyber defense.
+        Together, we’ll unravel code, decode threats, and secure new frontiers.
       </p>
     </section>
   </main>
 
   <!-- Footer -->
   <footer>
-    <p>&copy; <span id="year"></span> My Cybersecurity Blog. All Rights Reserved.</p>
+    <p>&copy; <span id="year"></span> Justin Watson. All Rights Reserved.</p>
     <script>
       // Update Footer Year Dynamically
       document.getElementById('year').textContent = new Date().getFullYear();
@@ -411,11 +432,6 @@
   </footer>
 
   <script>
-    // Random shape generation
-    const shapes = ['triangle', 'circle', 'hexagon'];
-    const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
-    document.getElementById('randomShape').classList.add(randomShape);
-
     // Handle overlay interaction
     const overlay = document.getElementById('overlay');
     const enterButton = document.getElementById('enterButton');
