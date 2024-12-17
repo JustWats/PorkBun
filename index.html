@@ -60,6 +60,29 @@
       100% { transform: translateY(-20px); }
     }
 
+    /* Global CRT Overlay */
+    .crt-overlay {
+      pointer-events: none;
+      position: fixed;
+      top:0; left:0; right:0; bottom:0;
+      z-index: 999;
+      opacity: 0.07;
+      mix-blend-mode: screen;
+      background: repeating-linear-gradient(
+        rgba(255,255,255,0.05) 0,
+        rgba(255,255,255,0.05) 1px,
+        transparent 2px,
+        transparent 4px
+      );
+      animation: crtScan 5s linear infinite;
+    }
+
+    @keyframes crtScan {
+      0% { transform: translateY(-10%); }
+      50% { transform: translateY(10%); }
+      100% { transform: translateY(-10%); }
+    }
+
     /* Scan lines overlay on body */
     body::after {
       content: "";
@@ -221,35 +244,6 @@
       overflow: hidden;
     }
 
-    /* CRT-style scanning line and flicker on mainframe-intro */
-    .mainframe-intro::before, .mainframe-intro::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: repeating-linear-gradient(
-        to bottom,
-        rgba(255,255,255,0.05) 0,
-        rgba(255,255,255,0.05) 1px,
-        transparent 2px,
-        transparent 4px
-      );
-      opacity: 0.05;
-      pointer-events: none;
-      mix-blend-mode: screen;
-    }
-
-    .mainframe-intro::after {
-      background: linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
-      animation: scanDown 2s ease-in-out infinite;
-    }
-
-    @keyframes scanDown {
-      0% { transform: translateY(-100%); }
-      50% { transform: translateY(0); }
-      100% { transform: translateY(100%); }
-    }
-
-    /* Intro network effect */
     .intro-network {
       position: absolute;
       top:0; left:0; right:0; bottom:0;
@@ -267,17 +261,24 @@
       animation: fadeNode 3s infinite;
     }
 
-    /* Slightly faster node animation inside intro */
     .intro-network .node:nth-child(1) { top:20%; left:40%; animation-delay:0.5s;}
     .intro-network .node:nth-child(2) { top:50%; left:60%; animation-delay:1s;}
     .intro-network .node:nth-child(3) { top:70%; left:30%; animation-delay:1.5s;}
     .intro-network .node:nth-child(4) { top:40%; left:80%; animation-delay:2s;}
     .intro-network .node:nth-child(5) { top:60%; left:20%; animation-delay:2.5s;}
 
-    /* Glitch text effect */
     .mainframe-intro p {
       position: relative;
       z-index: 3;
+      opacity: 1;
+      white-space: pre-wrap;
+      overflow: hidden;
+      border-right: 2px solid var(--accent-color);
+      display: inline-block;
+    }
+
+    /* We'll glitch text after typewriter finishes */
+    .glitch {
       animation: glitchText 3s infinite;
     }
 
@@ -547,6 +548,9 @@
   </style>
 </head>
 <body>
+  <!-- CRT Overlay -->
+  <div class="crt-overlay"></div>
+
   <div class="network-nodes">
     <div class="node" style="top:20%; left:30%; animation-delay: 1s;"></div>
     <div class="node" style="top:50%; left:70%; animation-delay: 2s;"></div>
@@ -563,8 +567,8 @@
       <div class="node"></div>
     </div>
     <div>
-      <p>Welcome!</p>
-      <p>Transitioning to personal blog...</p>
+      <p id="introLine1"></p>
+      <p id="introLine2" style="margin-top:10px;"></p>
     </div>
   </div>
 
@@ -669,12 +673,66 @@
     const introAudio = document.getElementById('introAudio');
     const mainframeIntro = document.getElementById('mainframeIntro');
     const audioToggle = document.getElementById('audioToggle');
+    const introLine1 = document.getElementById('introLine1');
+    const introLine2 = document.getElementById('introLine2');
 
     let startY = 0;
     let currentY = 0;
     let isDragging = false;
     let audioStarted = false;
     const threshold = 100; 
+
+    // Typewriter Effect
+    function typeWriter(element, text, speed=50, callback) {
+      let index = 0;
+      const interval = setInterval(() => {
+        element.textContent = text.slice(0, index);
+        index++;
+        if (index > text.length) {
+          clearInterval(interval);
+          // Remove cursor after typing finishes
+          element.style.borderRight = 'none';
+          if (callback) callback();
+        }
+      }, speed);
+    }
+
+    function runMainframeIntro() {
+      // Show mainframe intro overlay
+      mainframeIntro.style.opacity = '1';
+      mainframeIntro.style.transition = 'opacity 0.5s ease';
+
+      // Type out the text line by line
+      const line1 = "Welcome!";
+      const line2 = "Transitioning to personal blog...";
+
+      typeWriter(introLine1, line1, 100, () => {
+        // After first line typed, start second line after a short delay
+        setTimeout(() => {
+          typeWriter(introLine2, line2, 75, () => {
+            // After second line typed, wait a couple seconds, then start glitch and fade out
+            setTimeout(() => {
+              // Add glitch effect to text after it's typed
+              introLine1.classList.add('glitch');
+              introLine2.classList.add('glitch');
+
+              // Show intro for a bit longer, about 2 more seconds
+              setTimeout(() => {
+                mainframeIntro.style.opacity = '0';
+                setTimeout(() => {
+                  mainframeIntro.style.display = 'none';
+                  // Animate in header, hero, main, footer
+                  document.querySelector('header').classList.add('loaded');
+                  document.querySelector('.hero').classList.add('loaded');
+                  document.querySelector('main').classList.add('loaded');
+                  document.querySelector('footer').classList.add('loaded');
+                }, 1000);
+              }, 2000);
+            }, 1000);
+          });
+        }, 500);
+      });
+    }
 
     function onPointerDown(e) {
       isDragging = true;
@@ -716,24 +774,6 @@
         splashDragOverlay.style.transform = 'translateY(0)';
         splashDragOverlay.style.opacity = '1';
       }
-    }
-
-    function runMainframeIntro() {
-      // Show mainframe intro overlay
-      mainframeIntro.style.opacity = '1';
-      mainframeIntro.style.transition = 'opacity 0.5s ease';
-      setTimeout(() => {
-        // After 1.5s, fade out mainframe intro
-        mainframeIntro.style.opacity = '0';
-        setTimeout(() => {
-          mainframeIntro.style.display = 'none';
-          // Animate in header, hero, main, footer
-          document.querySelector('header').classList.add('loaded');
-          document.querySelector('.hero').classList.add('loaded');
-          document.querySelector('main').classList.add('loaded');
-          document.querySelector('footer').classList.add('loaded');
-        }, 1000); 
-      }, 1500);
     }
 
     // Toggle audio
