@@ -60,7 +60,7 @@
       100% { transform: translateY(-20px); }
     }
 
-    /* Scan lines overlay */
+    /* Scan lines overlay on body */
     body::after {
       content: "";
       position: fixed;
@@ -210,6 +210,7 @@
       background: #000;
       color: var(--accent-color);
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       font-size: 1rem;
@@ -217,6 +218,75 @@
       opacity: 0;
       z-index: 9998;
       pointer-events: none;
+      overflow: hidden;
+    }
+
+    /* CRT-style scanning line and flicker on mainframe-intro */
+    .mainframe-intro::before, .mainframe-intro::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.05) 0,
+        rgba(255,255,255,0.05) 1px,
+        transparent 2px,
+        transparent 4px
+      );
+      opacity: 0.05;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    .mainframe-intro::after {
+      background: linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
+      animation: scanDown 2s ease-in-out infinite;
+    }
+
+    @keyframes scanDown {
+      0% { transform: translateY(-100%); }
+      50% { transform: translateY(0); }
+      100% { transform: translateY(100%); }
+    }
+
+    /* Intro network effect */
+    .intro-network {
+      position: absolute;
+      top:0; left:0; right:0; bottom:0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .intro-network .node {
+      width: 4px; height:4px;
+      background: var(--accent-color);
+      position:absolute;
+      border-radius:50%;
+      opacity:0;
+      animation: fadeNode 3s infinite;
+    }
+
+    /* Slightly faster node animation inside intro */
+    .intro-network .node:nth-child(1) { top:20%; left:40%; animation-delay:0.5s;}
+    .intro-network .node:nth-child(2) { top:50%; left:60%; animation-delay:1s;}
+    .intro-network .node:nth-child(3) { top:70%; left:30%; animation-delay:1.5s;}
+    .intro-network .node:nth-child(4) { top:40%; left:80%; animation-delay:2s;}
+    .intro-network .node:nth-child(5) { top:60%; left:20%; animation-delay:2.5s;}
+
+    /* Glitch text effect */
+    .mainframe-intro p {
+      position: relative;
+      z-index: 3;
+      animation: glitchText 3s infinite;
+    }
+
+    @keyframes glitchText {
+      0% { text-shadow:none; }
+      20% { text-shadow:-1px 0 var(--accent-color); transform:translateX(-1px); }
+      25% { text-shadow:1px 0 var(--accent-color); transform:translateX(1px); }
+      30% { text-shadow:none; transform:translateX(0); }
+      100% { text-shadow:none; transform:translateX(0); }
     }
 
     header, .hero, main, footer {
@@ -485,9 +555,16 @@
 
   <!-- Mainframe Intro Overlay -->
   <div class="mainframe-intro" id="mainframeIntro">
+    <div class="intro-network">
+      <div class="node"></div>
+      <div class="node"></div>
+      <div class="node"></div>
+      <div class="node"></div>
+      <div class="node"></div>
+    </div>
     <div>
       <p>Welcome!</p>
-      <p>Transitioning to personal blog.</p>
+      <p>Transitioning to personal blog...</p>
     </div>
   </div>
 
@@ -628,7 +705,7 @@
       splashDragOverlay.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
 
       if (diff > threshold) {
-        // Unlock - do not stop the audio now, let user control it
+        // Unlock
         splash.style.opacity = '0';
         setTimeout(() => {
           splash.style.display = 'none';
