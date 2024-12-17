@@ -219,7 +219,6 @@
       pointer-events: none;
     }
 
-    /* We'll handle animations in JS after splash unlock */
     header, .hero, main, footer {
       opacity:0; 
       transform: scale(0.95);
@@ -272,6 +271,27 @@
 
     nav a:hover {
       color: var(--accent-color);
+    }
+
+    .audio-toggle {
+      margin-left: 20px;
+    }
+
+    .audio-toggle button {
+      background: none;
+      border: 1px solid var(--accent-color);
+      color: var(--text-color);
+      padding: 3px 8px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.9rem;
+      transition: background var(--transition-speed), color var(--transition-speed);
+    }
+
+    .audio-toggle button:hover {
+      background: var(--accent-color);
+      color: #000;
     }
 
     /* Hero */
@@ -496,6 +516,9 @@
         <li><a href="#about">About</a></li>
         <li><a href="https://github.com/JustWats" target="_blank" rel="noopener noreferrer">GitHub</a></li>
       </ul>
+      <div class="audio-toggle">
+        <button id="audioToggle">Pause Music</button>
+      </div>
     </nav>
   </header>
 
@@ -568,6 +591,7 @@
     const splashDragOverlay = document.getElementById('splashDragOverlay');
     const introAudio = document.getElementById('introAudio');
     const mainframeIntro = document.getElementById('mainframeIntro');
+    const audioToggle = document.getElementById('audioToggle');
 
     let startY = 0;
     let currentY = 0;
@@ -580,7 +604,7 @@
       startY = e.touches ? e.touches[0].clientY : e.clientY;
       splashDragOverlay.style.transition = 'none';
 
-      // Start audio on first interaction
+      // Start audio on first interaction if not started
       if (!audioStarted) {
         audioStarted = true;
         introAudio.play().catch(err => console.log("Audio start blocked:", err));
@@ -604,9 +628,7 @@
       splashDragOverlay.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
 
       if (diff > threshold) {
-        // Unlock: Stop audio, remove splash
-        introAudio.pause();
-        introAudio.currentTime = 0;
+        // Unlock - do not stop the audio now, let user control it
         splash.style.opacity = '0';
         setTimeout(() => {
           splash.style.display = 'none';
@@ -633,11 +655,22 @@
           document.querySelector('.hero').classList.add('loaded');
           document.querySelector('main').classList.add('loaded');
           document.querySelector('footer').classList.add('loaded');
-        }, 1000);
+        }, 1000); 
       }, 1500);
     }
 
-    // Event listeners for drag functionality
+    // Toggle audio
+    audioToggle.addEventListener('click', () => {
+      if (introAudio.paused) {
+        introAudio.play();
+        audioToggle.textContent = 'Pause Music';
+      } else {
+        introAudio.pause();
+        audioToggle.textContent = 'Play Music';
+      }
+    });
+
+    // Event listeners
     splashDragOverlay.addEventListener('mousedown', onPointerDown);
     splashDragOverlay.addEventListener('mousemove', onPointerMove);
     splashDragOverlay.addEventListener('mouseup', onPointerUp);
