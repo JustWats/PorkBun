@@ -6,8 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
   <!-- SEO & Social Sharing -->
-  <meta name="description" content="A Cybersecurity blog focusing on network defense, threat intelligence, and secure coding practices." />
-  <meta name="keywords" content="Cybersecurity, InfoSec, Network Security, Threat Intelligence, Security Best Practices" />
+  <meta name="description" content="A blog focusing on Digital Forensics & Incident Response, Threat Hunting, and Malware Analysis." />
+  <meta name="keywords" content="DFIR, Cybersecurity, Threat Hunting, Malware Analysis, Incident Response" />
 
   <!-- Page Title -->
   <title>My Cybersecurity Blog</title>
@@ -43,81 +43,58 @@
       overflow-x: hidden;
     }
 
-    /* Splash Overlay */
+    /* Swipe Overlay */
     .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.85);
       display: flex;
-      align-items: center;
-      justify-content: center;
       flex-direction: column;
+      justify-content: flex-end;
+      background: transparent;
       z-index: 9999;
-      text-align: center;
-      animation: fadeIn var(--transition-speed) ease-in;
+      pointer-events: none;
     }
 
     .overlay-content {
-      color: var(--text-color);
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      text-align: center;
       padding: 20px;
-      max-width: 90%;
-      animation: scaleUp 0.7s cubic-bezier(0.5, 1.25, 0.5, 1);
-    }
-
-    .overlay h2 {
-      color: var(--accent-color);
-      margin-bottom: 20px;
-      font-size: 1.5rem;
-      letter-spacing: 2px;
-    }
-
-    .logo-container {
-      width: 150px;
-      height: 150px;
-      margin: 20px auto;
+      pointer-events: auto;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      border-top: 1px solid rgba(255,255,255,0.1);
       position: relative;
-      animation: rotateScale 5s infinite linear;
     }
 
-    .logo-container img {
-      width: 100%;
-      height: auto;
-      display: block;
-      opacity: 0.9;
+    .overlay-content .logo-watermark {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      opacity: 0.4;
     }
 
-    .overlay button {
-      border: 1px solid var(--accent-color);
-      background: transparent;
+    .overlay-text {
+      margin-top: 60px;
       color: var(--accent-color);
-      padding: 10px 20px;
       font-size: 1rem;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background var(--transition-speed), color var(--transition-speed);
-      margin-top: 20px;
       letter-spacing: 1px;
+      margin-bottom: 10px;
     }
 
-    .overlay button:hover {
+    .overlay-instruction {
+      font-size: 0.9rem;
+      color: var(--text-color);
+      opacity: 0.8;
+    }
+
+    .drag-handle {
+      width: 40px;
+      height: 4px;
       background: var(--accent-color);
-      color: #000;
-    }
-
-    @keyframes scaleUp {
-      0% { transform: scale(0.8); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    @keyframes rotateScale {
-      0% { transform: scale(1) rotate(0deg); }
-      50% { transform: scale(1.05) rotate(180deg); }
-      100% { transform: scale(1) rotate(360deg); }
-    }
-
-    @keyframes fadeIn {
-      0% { opacity: 0; }
-      100% { opacity: 1; }
+      border-radius: 2px;
+      margin: 10px auto;
     }
 
     header {
@@ -338,16 +315,13 @@
   <!-- Audio Element -->
   <audio id="introAudio" src="https://files.catbox.moe/4e75y2.mp3" preload="auto"></audio>
 
-  <!-- Splash Overlay -->
+  <!-- Swipe Overlay -->
   <div class="overlay" id="overlay">
-    <div class="overlay-content">
-      <h2>Access Required</h2>
-      <div class="logo-container">
-        <!-- Replace with your own image. The provided image should be placed in your repo at 'images/lion-logo.png'. -->
-        <img src="images/lion-logo.png" alt="Ambiguous Lion Logo" />
-      </div>
-      <p>Confirm your intent.</p>
-      <button id="enterButton">ENTER</button>
+    <div class="overlay-content" id="overlayContent">
+      <img src="images/lion-logo.png" alt="Logo" class="logo-watermark"/>
+      <div class="drag-handle"></div>
+      <p class="overlay-text">ACCESS PORTAL</p>
+      <p class="overlay-instruction">Drag Up to Unlock</p>
     </div>
   </div>
 
@@ -366,8 +340,8 @@
 
   <!-- Hero -->
   <section class="hero">
-    <h1 data-text="DEFEND YOUR DIGITAL FRONTIER">DEFEND YOUR DIGITAL FRONTIER</h1>
-    <p>Insights, tools, and strategies to outmaneuver the evolving cyber threat landscape.</p>
+    <h1 data-text="FORENSICS, RESPONSE, & HUNTING">FORENSICS, RESPONSE, & HUNTING</h1>
+    <p>Delve into Digital Forensics & Incident Response, empower Threat Hunting capabilities, and dissect Malware to stay ahead of the adversary.</p>
   </section>
 
   <!-- Main Content -->
@@ -377,11 +351,11 @@
       <h2 class="section-title">Featured Posts</h2>
       <div class="posts-grid">
         <article class="post">
-          <img src="https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1050&q=80" alt="Featured Post Image" />
+          <img src="https://images.unsplash.com/photo-1518779578993-ec3579fee39c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1050&q=80" alt="Featured Post Image" />
           <div class="post-content">
-            <h3>Cracking the Code of Zero-Day Exploits</h3>
-            <p>Uncover the hidden pathways of zero-days and learn to identify emerging threats before they breach your perimeter.</p>
-            <a href="posts/understanding-zero-day.html" class="read-more">Read More</a>
+            <h3>Unmasking Advanced Persistent Threats</h3>
+            <p>Dissect methods to identify and respond to sophisticated attackers lurking quietly in your environment.</p>
+            <a href="posts/unmasking-apt.html" class="read-more">Read More</a>
           </div>
         </article>
       </div>
@@ -392,20 +366,20 @@
       <h2 class="section-title">Recent Posts</h2>
       <div class="posts-grid">
         <article class="post">
-          <img src="https://images.unsplash.com/photo-1601582592979-721ce50f0aad?ixlib=rb-4.0.3&auto=format&fit=crop&w=1050&q=80" alt="Recent Post Image" />
+          <img src="https://images.unsplash.com/photo-1625775707287-c72307dd8644?ixlib=rb-4.0.3&auto=format&fit=crop&w=1050&q=80" alt="Recent Post Image" />
           <div class="post-content">
-            <h3>Secure Coding Best Practices</h3>
-            <p>Weave security into every line of code, forging applications that withstand the harshest cyber onslaughts.</p>
-            <a href="posts/secure-coding-best-practices.html" class="read-more">Read More</a>
+            <h3>Memory Forensics 101</h3>
+            <p>Decode volatile memory data to uncover footprints of malicious activity and reconstruct the adversary’s timeline.</p>
+            <a href="posts/memory-forensics.html" class="read-more">Read More</a>
           </div>
         </article>
 
         <article class="post">
-          <img src="https://images.unsplash.com/photo-1565895405130-04c92d7bca85?ixlib=rb-4.0.3&auto=format&fit=crop&w=1050&q=80" alt="Recent Post Image" />
+          <img src="https://images.unsplash.com/photo-1584433144859-4697f63a1ebc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1050&q=80" alt="Recent Post Image" />
           <div class="post-content">
-            <h3>Network Intrusion Detection 101</h3>
-            <p>Map the neural pathways of your network traffic and spot malicious intent before it strikes.</p>
-            <a href="posts/network-intrusion-detection.html" class="read-more">Read More</a>
+            <h3>Behavioral Malware Analysis</h3>
+            <p>Track malicious binaries in real-time, identify Command & Control patterns, and neutralize threats at their source.</p>
+            <a href="posts/behavioral-malware-analysis.html" class="read-more">Read More</a>
           </div>
         </article>
       </div>
@@ -415,9 +389,9 @@
     <section id="about">
       <h2 class="section-title">About</h2>
       <p>
-        I’m Justin Watson, a cybersecurity strategist and researcher carving out a path through the shifting sands of digital warfare. 
-        Using deep analysis, advanced defense tactics, and real-world case studies, this blog unveils the subtle art of cyber defense.
-        Together, we’ll unravel code, decode threats, and secure new frontiers.
+        I’m Justin Watson, a DFIR analyst and threat hunter navigating the intricate dance between attacker and defender. 
+        This blog sheds light on the art and science of digital forensics, incident response, threat hunting, and malware analysis. 
+        Join me in unmasking hidden adversaries and fortifying your cyber defenses one byte at a time.
       </p>
     </section>
   </main>
@@ -432,18 +406,58 @@
   </footer>
 
   <script>
-    // Handle overlay interaction
     const overlay = document.getElementById('overlay');
-    const enterButton = document.getElementById('enterButton');
+    const overlayContent = document.getElementById('overlayContent');
     const introAudio = document.getElementById('introAudio');
 
-    enterButton.addEventListener('click', () => {
-      overlay.style.display = 'none';
-      // Play audio after user interaction
-      introAudio.play().catch(err => {
-        console.log("Autoplay prevented: " + err);
-      });
-    });
+    let startY = 0;
+    let currentY = 0;
+    let isDragging = false;
+    let threshold = 100; // Adjust how far user must drag up to unlock
+
+    function onPointerDown(e) {
+      isDragging = true;
+      startY = e.touches ? e.touches[0].clientY : e.clientY;
+      overlayContent.style.transition = 'none';
+    }
+
+    function onPointerMove(e) {
+      if (!isDragging) return;
+      currentY = e.touches ? e.touches[0].clientY : e.clientY;
+      let diff = startY - currentY;
+      if (diff > 0) {
+        overlayContent.style.transform = `translateY(-${diff}px)`;
+        overlayContent.style.opacity = Math.max(1 - diff/300, 0.5);
+      }
+    }
+
+    function onPointerUp() {
+      if (!isDragging) return;
+      isDragging = false;
+      const diff = startY - currentY;
+      overlayContent.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+
+      if (diff > threshold) {
+        // Unlock
+        overlay.style.display = 'none';
+        // Play audio after user interaction
+        introAudio.play().catch(err => console.log("Autoplay prevented:", err));
+      } else {
+        // Restore if not dragged enough
+        overlayContent.style.transform = 'translateY(0)';
+        overlayContent.style.opacity = '1';
+      }
+    }
+
+    // Event listeners for both mouse and touch
+    overlayContent.addEventListener('mousedown', onPointerDown);
+    overlayContent.addEventListener('mousemove', onPointerMove);
+    overlayContent.addEventListener('mouseup', onPointerUp);
+    overlayContent.addEventListener('mouseleave', onPointerUp);
+
+    overlayContent.addEventListener('touchstart', onPointerDown);
+    overlayContent.addEventListener('touchmove', onPointerMove);
+    overlayContent.addEventListener('touchend', onPointerUp);
   </script>
 </body>
 </html>
