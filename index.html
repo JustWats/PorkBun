@@ -575,7 +575,7 @@
     </div>
   </div>
 
-  <!-- Audio Elements (We won't show them, but we will load them and pick randomly) -->
+  <!-- Audio Elements -->
   <audio id="introAudio" preload="auto" loop></audio>
 
   <!-- Splash Screen -->
@@ -618,11 +618,11 @@
       <h2 class="section-title">Featured</h2>
       <div class="posts-grid">
         <article class="post">
-          <img src="https://images.unsplash.com/photo-1518779578993-ec3579fee39c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1050&q=80" alt="Featured Post Image" />
+          <img src="https://images.unsplash.com/photo-1622755871820-f00a210b6f02?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80" alt="Cobalt Strike Payload Image" />
           <div class="post-content">
-            <h3>Track Attackers Fast</h3>
-            <p>Detect hidden threats and isolate malicious activity.</p>
-            <a href="#" class="read-more">Read</a>
+            <h3>Decoding Encoded Cobalt Strike Payloads</h3>
+            <p>Learn techniques to peel back layers of obfuscation and reveal the payload.</p>
+            <a href="cobaltstrike-guide.html" class="read-more">Read</a>
           </div>
         </article>
       </div>
@@ -632,23 +632,7 @@
     <section class="recent-posts" id="recent">
       <h2 class="section-title">Recent</h2>
       <div class="posts-grid">
-        <article class="post">
-          <img src="https://images.unsplash.com/photo-1625775707287-c72307dd8644?ixlib=rb-4.0.3&auto=format&fit=crop&w=1050&q=80" alt="Recent Post Image" />
-          <div class="post-content">
-            <h3>Memory Forensics Basics</h3>
-            <p>Find malicious footprints in RAM quickly.</p>
-            <a href="#" class="read-more">Read</a>
-          </div>
-        </article>
-
-        <article class="post">
-          <img src="https://images.unsplash.com/photo-1584433144859-4697f63a1ebc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1050&q=80" alt="Recent Post Image" />
-          <div class="post-content">
-            <h3>Malware Behavior Tips</h3>
-            <p>Spot patterns and disrupt harmful code.</p>
-            <a href="#" class="read-more">Read</a>
-          </div>
-        </article>
+        <!-- ... other posts ... -->
       </div>
     </section>
 
@@ -757,10 +741,8 @@
       startY = e.touches ? e.touches[0].clientY : e.clientY;
       splashDragOverlay.style.transition = 'none';
 
-      // Start audio on first interaction if not started
       if (!audioStarted) {
         audioStarted = true;
-        // Pick a random song
         const randomSong = songs[Math.floor(Math.random() * songs.length)];
         introAudio.src = randomSong;
         introAudio.play().catch(err => console.log("Audio start blocked:", err));
@@ -847,18 +829,14 @@
     function draw() {
       ctx.clearRect(0, 0, width, height);
 
-      // Move nodes
       for (let i = 0; i < NUM_NODES; i++) {
         let node = nodes[i];
         node.x += node.vx;
         node.y += node.vy;
-
-        // Bounce off edges
         if (node.x < 0 || node.x > width) node.vx = -node.vx;
         if (node.y < 0 || node.y > height) node.vy = -node.vy;
       }
 
-      // Draw lines
       for (let i = 0; i < NUM_NODES; i++) {
         for (let j = i+1; j < NUM_NODES; j++) {
           let dx = nodes[i].x - nodes[j].x;
@@ -876,7 +854,6 @@
         }
       }
 
-      // Draw nodes
       for (let i = 0; i < NUM_NODES; i++) {
         let node = nodes[i];
         ctx.beginPath();
