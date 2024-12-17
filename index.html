@@ -203,6 +203,24 @@
       display: none;
     }
 
+    /* Mainframe Intro Transition */
+    .mainframe-intro {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      color: var(--accent-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1rem;
+      letter-spacing: 1px;
+      opacity: 0;
+      z-index: 9998;
+      pointer-events: none;
+    }
+
+    /* We'll handle animations in JS after splash unlock */
+
     /* Header */
     header {
       position: sticky;
@@ -211,39 +229,20 @@
       backdrop-filter: blur(3px);
       z-index: 1000;
       border-bottom: 1px solid #222;
+      opacity:0; /* Will fade in after intro */
+      transform: translateY(-20px); /* initial for intro animation */
     }
 
-    header nav {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 20px;
+    /* Hero and main content initial state for intro animation */
+    .hero, main, footer {
+      opacity:0; 
+      transform: scale(0.95); /* subtle scale and fade, will animate in after intro */
     }
 
-    header .logo {
-      font-weight: 700;
-      font-size: 1.3rem;
-      color: var(--heading-color);
-      letter-spacing: 1px;
-    }
-
-    header ul {
-      list-style: none;
-      display: flex;
-      gap: 20px;
-    }
-
-    header ul li a {
-      color: var(--text-color);
-      text-decoration: none;
-      font-size: 0.9rem;
-      transition: color var(--transition-speed);
-    }
-
-    header ul li a:hover {
-      color: var(--accent-color);
+    header.loaded, .hero.loaded, main.loaded, footer.loaded {
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      opacity:1;
+      transform: none; 
     }
 
     /* Hero */
@@ -341,7 +340,6 @@
       100% { transform: translateX(0%); }
     }
 
-    /* Posts Grid */
     .posts-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -426,6 +424,7 @@
     footer p {
       margin: 5px 0;
     }
+
   </style>
 </head>
 <body>
@@ -433,6 +432,14 @@
     <div class="node" style="top:20%; left:30%; animation-delay: 1s;"></div>
     <div class="node" style="top:50%; left:70%; animation-delay: 2s;"></div>
     <div class="node" style="top:80%; left:40%; animation-delay: 3s;"></div>
+  </div>
+
+  <!-- Mainframe Intro Overlay -->
+  <div class="mainframe-intro" id="mainframeIntro">
+    <div>
+      <p>Access Granted...</p>
+      <p>Uploading into Mainframe...</p>
+    </div>
   </div>
 
   <!-- Audio Element -->
@@ -523,7 +530,6 @@
   <footer>
     <p>&copy; <span id="year"></span> Justin Watson. All rights reserved.</p>
     <script>
-      // Update Footer Year Dynamically
       document.getElementById('year').textContent = new Date().getFullYear();
     </script>
   </footer>
@@ -532,23 +538,20 @@
     const splash = document.getElementById('splash');
     const splashDragOverlay = document.getElementById('splashDragOverlay');
     const introAudio = document.getElementById('introAudio');
+    const mainframeIntro = document.getElementById('mainframeIntro');
 
     let startY = 0;
     let currentY = 0;
     let isDragging = false;
     let audioStarted = false;
-    const threshold = 100; // Distance the user must drag upward to unlock
-
-    // Remove attempt to play on DOMContentLoaded to rely on user interaction
-    // The first user interaction (pointer down) will attempt to play audio.
-    // This is necessary due to autoplay policies.
+    const threshold = 100; 
 
     function onPointerDown(e) {
       isDragging = true;
       startY = e.touches ? e.touches[0].clientY : e.clientY;
       splashDragOverlay.style.transition = 'none';
 
-      // Attempt to play audio on interaction if not already started
+      // Start audio on first interaction
       if (!audioStarted) {
         audioStarted = true;
         introAudio.play().catch(err => console.log("Audio start blocked:", err));
@@ -578,6 +581,7 @@
         splash.style.opacity = '0';
         setTimeout(() => {
           splash.style.display = 'none';
+          runMainframeIntro();
         }, 500);
       } else {
         // Not enough drag, restore
@@ -586,7 +590,25 @@
       }
     }
 
-    // Event listeners for mouse and touch
+    function runMainframeIntro() {
+      // Show mainframe intro overlay
+      mainframeIntro.style.opacity = '1';
+      mainframeIntro.style.transition = 'opacity 0.5s ease';
+      setTimeout(() => {
+        // After 1.5s, fade out mainframe intro
+        mainframeIntro.style.opacity = '0';
+        setTimeout(() => {
+          mainframeIntro.style.display = 'none';
+          // Animate in header, hero, main, footer
+          document.querySelector('header').classList.add('loaded');
+          document.querySelector('.hero').classList.add('loaded');
+          document.querySelector('main').classList.add('loaded');
+          document.querySelector('footer').classList.add('loaded');
+        }, 1000); // wait a second before removing intro completely
+      }, 1500); // show mainframe intro text for 1.5s
+    }
+
+    // Event listeners
     splashDragOverlay.addEventListener('mousedown', onPointerDown);
     splashDragOverlay.addEventListener('mousemove', onPointerMove);
     splashDragOverlay.addEventListener('mouseup', onPointerUp);
