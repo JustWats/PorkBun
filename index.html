@@ -346,7 +346,7 @@
       color: #000;
     }
 
-    /* Hero */
+    /* Hero (trippy effect removed) */
     .hero {
       position: relative;
       min-height: 60vh;
@@ -359,20 +359,7 @@
       overflow: hidden;
     }
 
-    .hero::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: conic-gradient(from 0deg, var(--accent-color), #0e0e0e, var(--accent-color));
-      animation: rotateConic 20s linear infinite;
-      mix-blend-mode: screen;
-      opacity: 0.2; 
-    }
-
-    @keyframes rotateConic {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+    /* Removed .hero::before and rotateConic */
 
     .hero h1, .hero p {
       position: relative;
@@ -718,7 +705,6 @@
         index++;
         if (index > text.length) {
           clearInterval(interval);
-          // Remove cursor after typing finishes
           element.style.borderRight = 'none';
           if (callback) callback();
         }
@@ -730,26 +716,19 @@
       mainframeIntro.style.opacity = '1';
       mainframeIntro.style.transition = 'opacity 0.5s ease';
 
-      // Type out the text line by line
       const line1 = "Welcome!";
       const line2 = "Transitioning to personal blog...";
 
       typeWriter(introLine1, line1, 100, () => {
-        // After first line typed, start second line after a short delay
         setTimeout(() => {
           typeWriter(introLine2, line2, 75, () => {
-            // After second line typed, wait a couple seconds, then start glitch and fade out
             setTimeout(() => {
-              // Add glitch effect to text after it's typed
               introLine1.classList.add('glitch');
               introLine2.classList.add('glitch');
-
-              // Show intro for a bit longer, about 2 more seconds
               setTimeout(() => {
                 mainframeIntro.style.opacity = '0';
                 setTimeout(() => {
                   mainframeIntro.style.display = 'none';
-                  // Animate in header, hero, main, footer
                   document.querySelector('header').classList.add('loaded');
                   document.querySelector('.hero').classList.add('loaded');
                   document.querySelector('main').classList.add('loaded');
@@ -767,7 +746,6 @@
       startY = e.touches ? e.touches[0].clientY : e.clientY;
       splashDragOverlay.style.transition = 'none';
 
-      // Start audio on first interaction if not started
       if (!audioStarted) {
         audioStarted = true;
         introAudio.play().catch(err => console.log("Audio start blocked:", err));
@@ -791,20 +769,17 @@
       splashDragOverlay.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
 
       if (diff > threshold) {
-        // Unlock
         splash.style.opacity = '0';
         setTimeout(() => {
           splash.style.display = 'none';
           runMainframeIntro();
         }, 500);
       } else {
-        // Not enough drag, restore
         splashDragOverlay.style.transform = 'translateY(0)';
         splashDragOverlay.style.opacity = '1';
       }
     }
 
-    // Toggle audio
     audioToggle.addEventListener('click', () => {
       if (introAudio.paused) {
         introAudio.play();
@@ -815,7 +790,6 @@
       }
     });
 
-    // Event listeners
     splashDragOverlay.addEventListener('mousedown', onPointerDown);
     splashDragOverlay.addEventListener('mousemove', onPointerMove);
     splashDragOverlay.addEventListener('mouseup', onPointerUp);
@@ -850,9 +824,15 @@
           y: Math.random() * height,
           vx: (Math.random() - 0.5) * SPEED,
           vy: (Math.random() - 0.5) * SPEED,
-          color: `hsl(${Math.random()*360},60%,60%)`
+          color: varColor()
         });
       }
+    }
+
+    // Generate a node color close to accent color #48a9a6
+    // We'll keep them all the same accent color for uniformity.
+    function varColor() {
+      return "#48a9a6"; 
     }
 
     function draw() {
