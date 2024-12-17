@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Guide on decoding encoded Cobalt Strike payloads." />
+  <meta name="keywords" content="Cobalt Strike, payload decoding, DFIR, Cybersecurity" />
+
+  <title>Decoding Encoded Cobalt Strike Payloads</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-color: #0e0e0e;
+      --text-color: #ccc;
+      --accent-color: #48a9a6; 
+      --heading-color: #fff;
+    }
+
+    body {
+      background: var(--bg-color);
+      font-family: 'Orbitron', sans-serif;
+      color: var(--text-color);
+      margin:0; padding:0;
+      line-height:1.6;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Amplified CRT effect */
+    body::before {
+      content:"";
+      position: fixed; 
+      top:0;left:0;width:100%;height:100%;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 2px);
+      background-size: 100% 4px;
+      mix-blend-mode: overlay;
+      opacity:0.2;
+      animation: flickerCRT 3s infinite alternate ease-in-out;
+      z-index: -1;
+    }
+
+    @keyframes flickerCRT {
+      0% {opacity:0.15;}
+      50% {opacity:0.25;}
+      100% {opacity:0.15;}
+    }
+
+    .crt-overlay {
+      position: fixed;
+      top:0;left:0;right:0;bottom:0;
+      pointer-events:none;
+      opacity:0.15;
+      mix-blend-mode: screen;
+      background: repeating-linear-gradient(
+        rgba(255,255,255,0.05) 0,
+        rgba(255,255,255,0.05) 1px,
+        transparent 2px,
+        transparent 4px
+      );
+      animation: crtGlitch 5s linear infinite;
+      z-index:1000;
+    }
+
+    @keyframes crtGlitch {
+      0% {transform:translateY(-5%);}
+      50% {transform:translateY(5%);}
+      100% {transform:translateY(-5%);}
+    }
+
+    header {
+      background: rgba(14,14,14,0.95);
+      backdrop-filter: blur(3px);
+      border-bottom:1px solid #222;
+      padding:20px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+
+    header .logo {
+      color: var(--heading-color);
+      font-size:1.3rem;
+      font-weight:700;
+      text-decoration:none;
+    }
+
+    .back-link {
+      color: var(--text-color);
+      text-decoration:none;
+      border:1px solid var(--accent-color);
+      padding:4px 8px;
+      border-radius:4px;
+      transition:background 0.3s;
+    }
+
+    .back-link:hover {
+      background:var(--accent-color);
+      color:#000;
+    }
+
+    main {
+      max-width:800px;
+      margin:40px auto;
+      padding:0 20px;
+    }
+
+    h1 {
+      color: var(--heading-color);
+      font-size:1.8rem;
+      margin-bottom:20px;
+    }
+
+    h2 {
+      color: var(--heading-color);
+      font-size:1.2rem;
+      margin:20px 0 10px;
+    }
+
+    p {
+      margin-bottom:20px;
+      font-size:0.95rem;
+      line-height:1.6;
+    }
+
+    code, pre {
+      background:#111;
+      color:#48a9a6;
+      padding:2px 4px;
+      border-radius:3px;
+      font-size:0.9rem;
+    }
+
+    pre {
+      overflow:auto;
+      white-space:pre-wrap;
+    }
+
+    a {
+      color: var(--accent-color);
+      text-decoration:none;
+      border-bottom:1px dashed var(--accent-color);
+    }
+
+    a:hover {
+      text-decoration:none;
+      background:var(--accent-color);
+      color:#000;
+    }
+
+    footer {
+      text-align:center;
+      color: var(--text-color);
+      font-size:0.8rem;
+      border-top:1px solid #222;
+      padding:20px;
+      margin-top:40px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="crt-overlay"></div>
+  <header>
+    <a class="logo" href="index.html"><#JustWats></a>
+    <a class="back-link" href="index.html">Back</a>
+  </header>
+  
+  <main>
+    <h1>Decoding Encoded Cobalt Strike Payloads</h1>
+
+    <p>When analyzing intrusions or working on threat hunting scenarios, one common challenge is dealing with obfuscated or encoded payloads from adversaries. Cobalt Strike—often used by red teams and, unfortunately, threat actors—frequently employs encoding to mask its true nature.</p>
+
+    <h2>Understanding the Encoding</h2>
+    <p>Payloads may be encoded using Base64, custom XOR schemes, or even layered encodings. Our goal is to identify these layers and systematically decode them until we reveal the core payload.</p>
+
+    <h2>Tools & Techniques</h2>
+    <p>To decode these payloads, you'll want a toolkit of methods:</p>
+    <ul>
+      <li><strong>Strings & Hex Dumps:</strong> Start by inspecting the payload with <code>strings</code> or a hex editor. Look for suspicious markers like <code>Base64</code> padding (<code>=</code> signs) or repeating patterns.</li>
+      <li><strong>Base64 Decoding:</strong> If you detect Base64 patterns, run <code>base64 -d</code> or use a Python one-liner to decode: <code>echo 'encodedstring' | base64 -d</code></li>
+      <li><strong>XOR or Custom Encoding:</strong> Try common XOR keys, often single-byte, or attempt frequency analysis. A simple Python script can guess XOR keys if you suspect simple XOR:</p>
+
+    <pre><code>for key in range(256):
+    decoded = ''.join(chr(ord(c) ^ key) for c in encoded_data)
+    if 'MZ' in decoded: # Checks for PE header
+        print("Possible key:", key)
+</code></pre>
+
+    <h2>Layered Decoding</h2>
+    <p>Cobalt Strike payloads may have multiple layers. You might decode Base64, reveal a blob that is then XOR'ed, and once decoded, reveal another chunk that’s compressed. Each layer you peel back brings you closer to the original shellcode or PE file.</p>
+
+    <h2>Practical Example</h2>
+    <p>Consider a payload that after <code>strings</code> inspection shows a large Base64 block. Decode that Base64 and you get a binary blob that makes little sense. Attempt XOR with common keys (0x50, 0x00, etc.) until you see 'MZ'. Once you see that MZ signature, you know you've uncovered a Windows PE file—very likely the Cobalt Strike beacon DLL.</p>
+
+    <h2>Conclusion</h2>
+    <p>By systematically applying decoding steps—Base64 decoding, XOR key guessing, layer stripping—you can uncover the original Cobalt Strike payload. Understanding these techniques is crucial for digital forensics, threat hunting, and incident response, allowing you to reveal the adversary’s toolkit and respond effectively.</p>
+  </main>
+
+  <footer>
+    &copy; <span id="year"></span> Justin Watson.
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+  </footer>
+</body>
+</html>
