@@ -796,15 +796,18 @@
     // Toggle play/pause
     audioToggle.addEventListener('click', () => {
       introAudio.muted = false;
-      introAudio.volume = volumeSlider.value; // Ensure volume matches slider state
+      introAudio.volume = volumeSlider.value;
+    
       if (introAudio.paused) {
-        introAudio.play();
-        audioToggle.textContent = 'Pause Music';
+        introAudio.play().then(() => {
+          audioToggle.textContent = 'Pause Music';
+        }).catch(err => console.error("Error playing audio:", err));
       } else {
         introAudio.pause();
         audioToggle.textContent = 'Play Music';
       }
     });
+
     function typeWriter(element, text, speed=50, callback) {
       let index = 0;
       const interval = setInterval(() => {
