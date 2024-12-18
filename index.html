@@ -139,12 +139,13 @@
       overflow: hidden;
       cursor: grab;
       touch-action: pan-y; /* Ensure vertical dragging works well on mobile */
+      display: flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
     }
 
     .splash-logo-container {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
       text-align: center;
     }
 
@@ -192,9 +193,6 @@
     }
 
     .splash-drag-overlay {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 50%;
       background: transparent;
       display: flex;
       flex-direction: column;
@@ -241,6 +239,8 @@
       z-index: 9998;
       pointer-events: none;
       overflow: hidden;
+      text-align:center;
+      padding:20px;
     }
 
     .intro-network {
@@ -339,6 +339,8 @@
       list-style: none;
       display: flex;
       gap: 20px;
+      align-items:center;
+      justify-content:center;
     }
 
     nav a {
@@ -346,6 +348,7 @@
       text-decoration: none;
       transition: color var(--transition-speed);
       font-size:0.9rem;
+      white-space:nowrap;
     }
 
     nav a:hover {
@@ -410,6 +413,14 @@
       clip: rect(0, 900px, 0, 0);
       animation: glitch 2s infinite ease-in-out alternate;
       opacity: 0.5;
+    }
+
+    @keyframes glitch {
+      0% { clip: rect(0, 900px, 0, 0); }
+      25% { clip: rect(10px, 900px, 90px, 0); transform: translate(-1px, -1px); }
+      50% { clip: rect(5px, 900px, 10px, 0); transform: translate(1px, 1px); }
+      75% { clip: rect(20px, 900px, 60px, 0); transform: translate(-1px, -1px); }
+      100% { clip: rect(0, 900px, 0, 0); }
     }
 
     .hero p {
@@ -525,6 +536,8 @@
       line-height: 1.6;
       max-width: 800px;
       font-size: 0.95rem;
+      margin:0 auto; /* Center content on mobile */
+      text-align:center; /* Center text on mobile */
     }
 
     footer {
@@ -564,6 +577,41 @@
 
     .footer-socials a:hover img {
       filter: brightness(1);
+    }
+
+    /* Responsive adjustments for mobile */
+    @media (max-width: 600px) {
+      header nav {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      header nav ul {
+        justify-content: center;
+      }
+
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      main {
+        padding:0 10px;
+      }
+
+      .section-title {
+        text-align:center;
+      }
+
+      .posts-grid {
+        grid-template-columns: 1fr; /* Single column on mobile */
+        margin: 0 auto;
+      }
+
+      #about {
+        text-align:center;
+        margin: 0 auto;
+      }
     }
 
   </style>
