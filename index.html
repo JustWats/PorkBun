@@ -3,7 +3,7 @@
 <head>
   <!-- Basic Meta -->
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
   <meta name="description" content="Digital Forensics & Incident Response, Threat Hunting, and Malware Analysis insights." />
   <meta name="keywords" content="DFIR, Cybersecurity, Threat Hunting, Malware Analysis, Incident Response" />
 
@@ -12,8 +12,10 @@
   <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
   
-  <!-- Favicon Support -->
+  <!-- Expanded Favicon Support -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="manifest" href="/site.webmanifest">
 
   <style>
@@ -21,9 +23,11 @@
       --bg-color: #0e0e0e;
       --text-color: #ccc;
       --accent-color: #48a9a6; 
-      --heading-color: #fff;
-      --transition-speed: 0.3s;
       --card-bg: #191919;
+      --heading-color: #fff;
+      --link-color: #48a9a6;
+      --transition-speed: 0.3s;
+      --scale-hover: scale(1.03);
     }
 
     * {
@@ -32,12 +36,84 @@
       padding: 0;
     }
 
+    html, body {
+      width: 100%;
+      height: 100%;
+      overscroll-behavior: none;
+      scrollbar-width: none; /* For Firefox */
+    }
+
     body {
       background: var(--bg-color);
       font-family: 'Orbitron', sans-serif;
       color: var(--text-color);
-      line-height: 1.6;
-      overflow-x: hidden;
+      overflow: hidden;
+    }
+
+    /* Plexus Animation */
+    #plexusCanvas {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: -1;
+    }
+
+    /* Splash Screen */
+    .splash {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .splash-logo {
+      width: 100px;
+      animation: pulse 2s infinite alternate;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.05); }
+    }
+
+    .splash-instruction {
+      margin-top: 20px;
+      color: var(--accent-color);
+      font-size: 1rem;
+    }
+
+    /* Mainframe Intro */
+    .mainframe-intro {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      color: var(--accent-color);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 1rem;
+      letter-spacing: 1px;
+      opacity: 0;
+      z-index: 9998;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .mainframe-intro p {
+      white-space: pre-wrap;
+      overflow: hidden;
+      border-right: 2px solid var(--accent-color);
+      animation: typewriter 2s steps(20, end) forwards;
+    }
+
+    @keyframes typewriter {
+      from { width: 0; }
+      to { width: 100%; }
     }
 
     /* Header */
@@ -47,28 +123,14 @@
       background: rgba(14,14,14,0.95);
       backdrop-filter: blur(3px);
       z-index: 1000;
-      border-bottom: 1px solid #222;
-    }
-
-    header nav {
-      max-width: 1200px;
-      margin: 0 auto;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      padding: 15px 20px;
-    }
-
-    header .logo {
-      font-weight: 700;
-      font-size: 1.3rem;
-      color: var(--heading-color);
-      letter-spacing: 1px;
+      padding: 10px 20px;
     }
 
     nav ul {
-      list-style: none;
       display: flex;
+      list-style: none;
       gap: 20px;
     }
 
@@ -89,222 +151,118 @@
       gap: 10px;
     }
 
-    .audio-controls button {
+    .audio-controls button, .audio-controls input {
       background: none;
       border: 1px solid var(--accent-color);
       color: var(--text-color);
-      padding: 5px 8px;
-      border-radius: 3px;
+      padding: 5px 10px;
       cursor: pointer;
-      transition: all var(--transition-speed);
+      font-family: 'Orbitron', sans-serif;
     }
 
-    .audio-controls button:hover {
-      background: var(--accent-color);
-      color: #000;
-    }
-
-    .audio-slider input {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 100px;
-      height: 5px;
-      background: #444;
-      outline: none;
-      border-radius: 5px;
-    }
-
-    .audio-slider input::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 10px;
-      height: 10px;
-      background: var(--accent-color);
-      border-radius: 50%;
-      cursor: pointer;
-    }
-
-    /* Hero Section */
+    /* Hero */
     .hero {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 60vh;
       text-align: center;
-      padding: 50px 20px;
       color: var(--heading-color);
-      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9));
     }
 
     .hero h1 {
       font-size: 2.5rem;
-      margin-bottom: 20px;
-    }
-
-    .hero p {
-      font-size: 1rem;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    /* Main Content */
-    main {
-      max-width: 1200px;
-      margin: 40px auto;
-      padding: 0 20px;
-    }
-
-    .section-title {
-      font-size: 1.5rem;
-      color: var(--heading-color);
-      margin-bottom: 20px;
-      text-align: center;
-      border-bottom: 2px solid var(--accent-color);
-      display: inline-block;
-      padding-bottom: 5px;
-    }
-
-    .post {
-      background: var(--card-bg);
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-      margin-bottom: 20px;
-      overflow: hidden;
-      text-align: center;
-    }
-
-    .post img {
-      width: 100%;
-      height: auto;
-    }
-
-    .post h3 {
-      margin: 15px 0;
-      font-size: 1.2rem;
-      color: var(--heading-color);
-    }
-
-    .post p {
-      padding: 0 10px;
-      font-size: 0.9rem;
-    }
-
-    .post a {
-      display: inline-block;
-      margin: 10px;
-      padding: 5px 10px;
-      color: var(--accent-color);
-      border: 1px solid var(--accent-color);
-      text-decoration: none;
-      border-radius: 3px;
-      transition: background var(--transition-speed), color var(--transition-speed);
-    }
-
-    .post a:hover {
-      background: var(--accent-color);
-      color: #000;
+      margin-bottom: 10px;
     }
 
     /* Footer */
     footer {
       text-align: center;
-      padding: 20px;
       background: #111;
+      padding: 20px;
       color: var(--text-color);
     }
   </style>
 </head>
+
 <body>
+  <!-- Plexus Background -->
+  <canvas id="plexusCanvas"></canvas>
+
+  <!-- Splash Screen -->
+  <div class="splash">
+    <img src="images/raven-logo.png" alt="Logo" class="splash-logo" />
+    <p class="splash-instruction">Drag up to unlock...</p>
+  </div>
+
+  <!-- Mainframe Intro -->
+  <div class="mainframe-intro">
+    <p>Welcome...</p>
+  </div>
+
   <!-- Header -->
   <header>
+    <div class="logo">#JustWats</div>
     <nav>
-      <div class="logo">&lt;#JustWats&gt;</div>
       <ul>
         <li><a href="#featured">Featured</a></li>
         <li><a href="#about">About</a></li>
       </ul>
-      <div class="audio-controls">
-        <button id="shuffleButton">Shuffle</button>
-        <button id="playPauseButton">Pause</button>
-        <div class="audio-slider">
-          <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5">
-        </div>
-      </div>
     </nav>
+    <div class="audio-controls">
+      <button id="playPause">Pause</button>
+      <button id="shuffle">Shuffle</button>
+      <input type="range" id="volume" min="0" max="1" step="0.1" value="1">
+    </div>
   </header>
 
   <!-- Hero -->
   <section class="hero">
-    <h1>Welcome to Payload</h1>
-    <p>Insights on Digital Forensics, Incident Response, Threat Hunting, and Malware Analysis.</p>
+    <h1>Payload Blog</h1>
+    <p>Insights into Digital Forensics, Incident Response, and Threat Hunting.</p>
   </section>
-
-  <!-- Main Content -->
-  <main>
-    <section id="featured">
-      <h2 class="section-title">Featured</h2>
-      <div class="post">
-        <img src="https://i.imgur.com/P0Hyprs.png" alt="Cobalt Strike Payloads" />
-        <h3>Decoding Cobalt Strike Payloads</h3>
-        <p>Learn a technique to understand the types of obfuscation and better reveal the associated payload.</p>
-        <a href="#">Read More</a>
-      </div>
-    </section>
-  </main>
 
   <!-- Footer -->
   <footer>
-    <p>&copy; <span id="year"></span> Justin Watson. All rights reserved.</p>
+    <p>&copy; 2024 Justin Watson</p>
   </footer>
 
-  <!-- Audio Player Script -->
-  <audio id="audioPlayer" preload="auto"></audio>
   <script>
-    const audioPlayer = document.getElementById('audioPlayer');
-    const playPauseButton = document.getElementById('playPauseButton');
-    const shuffleButton = document.getElementById('shuffleButton');
-    const volumeSlider = document.getElementById('volumeSlider');
-
+    const audio = new Audio();
     const songs = [
       "https://files.catbox.moe/4e75y2.mp3",
       "https://files.catbox.moe/gyhnmf.mp3",
       "https://files.catbox.moe/i0zvrf.mp3"
     ];
+    let currentSong = 0;
 
-    let currentSongIndex = 0;
+    const playPauseBtn = document.getElementById('playPause');
+    const shuffleBtn = document.getElementById('shuffle');
+    const volumeSlider = document.getElementById('volume');
 
-    function playSong(index) {
-      audioPlayer.src = songs[index];
-      audioPlayer.play();
-      playPauseButton.textContent = "Pause";
-    }
+    audio.src = songs[currentSong];
+    audio.play();
 
-    function togglePlayPause() {
-      if (audioPlayer.paused) {
-        audioPlayer.play();
-        playPauseButton.textContent = "Pause";
+    playPauseBtn.addEventListener('click', () => {
+      if (audio.paused) {
+        audio.play();
+        playPauseBtn.textContent = 'Pause';
       } else {
-        audioPlayer.pause();
-        playPauseButton.textContent = "Play";
+        audio.pause();
+        playPauseBtn.textContent = 'Play';
       }
-    }
+    });
 
-    function shuffleSong() {
-      currentSongIndex = Math.floor(Math.random() * songs.length);
-      playSong(currentSongIndex);
-    }
-
-    audioPlayer.addEventListener('ended', () => {
-      currentSongIndex = (currentSongIndex + 1) % songs.length;
-      playSong(currentSongIndex);
+    shuffleBtn.addEventListener('click', () => {
+      currentSong = Math.floor(Math.random() * songs.length);
+      audio.src = songs[currentSong];
+      audio.play();
     });
 
     volumeSlider.addEventListener('input', () => {
-      audioPlayer.volume = volumeSlider.value;
+      audio.volume = volumeSlider.value;
     });
-
-    playPauseButton.addEventListener('click', togglePlayPause);
-    shuffleButton.addEventListener('click', shuffleSong);
-
-    // Initialize
-    playSong(currentSongIndex);
-    document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
