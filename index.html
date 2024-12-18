@@ -851,9 +851,14 @@
     
     // Shuffle the playlist
     function shuffleSongs() {
-      songs.sort(() => Math.random() - 0.5);
-      currentSongIndex = -1;
-      playNextSong();
+      let newIndex;
+      do {
+          newIndex  Math.floor(Math.random() * songs.length);
+      } while (newIndex === currentSongIndex);
+
+      currentSongIndex = newIndex;
+      introAudio.src = songs[currentSongIndex];
+      intoAudio.play();
     }
     // Adjust the audio volume
     volumeSlider.addEventListener('input', (e) => {
@@ -875,6 +880,16 @@
         audioToggle.textContent = 'Play Music';
       }
     });
+
+    // Update the button text when the audio ends
+    introAudio.addEventListener('play', () => {
+      audioToggle.textContent = 'Pause Music';
+    });
+    
+    introAudio.addEventListener('pause', () => {
+      audioToggle.textContent = 'Play Music';
+    });
+
     function typeWriter(element, text, speed=50, callback) {
       let index = 0;
       const interval = setInterval(() => {
