@@ -840,6 +840,7 @@
       "https://files.catbox.moe/gyhnmf.mp3",
       "https://files.catbox.moe/i0zvrf.mp3"
     ];
+    introAudio.loop = false;
     let currentSongIndex = -1;
     // Play the next song in the queue
     function playNextSong() {
@@ -850,14 +851,12 @@
     
     // Shuffle the playlist
     function shuffleSongs() {
-      const remainingSongs = songs.filter((_, index) => index !== currentSongIndex);
-      remainingSongs.sort(() => Math.random() - 0.5);
-      const randomIndex = Math.floor(Math.random() * (remainingSongs.length + 1));
-      remainingSongs.splice(randomIndex, 0, songs[currentSongIndex]);
-      songs.length = 0;
-      Array.prototype.push.apply(songs, remainingSongs);
-      currentSongIndex = -1;
-      playNextSong();
+      const remainingSongs = songs.filter((_, index) => index !== currentSongIndex); // Exclude the current song
+      const shuffled = remainingSongs.sort(() => Math.random() - 0.5); // Shuffle the remaining songs
+      const nextSongIndex = Math.floor(Math.random() * shuffled.length); // Choose a random next song
+      currentSongIndex = songs.indexOf(shuffled[nextSongIndex]); // Update the current song index
+      introAudio.src = songs[currentSongIndex]; // Set the shuffled song as the next song
+      introAudio.play(); // Play the song
     }
     // Adjust the audio volume
     volumeSlider.addEventListener('input', (e) => {
@@ -879,6 +878,7 @@
         audioToggle.textContent = 'Play Music';
       }
     });
+
     function typeWriter(element, text, speed=50, callback) {
       let index = 0;
       const interval = setInterval(() => {
