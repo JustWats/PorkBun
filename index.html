@@ -855,7 +855,12 @@
     
     // Shuffle the playlist
     function shuffleSongs() {
-      songs.sort(() => Math.random() - 0.5);
+      const remainingSongs = songs.filter((_, index) => index !== currentSongIndex);
+      remainingSongs.sort(() => Math.random() - 0.5);
+      const randomIndex = Math.floor(Math.random() * (remainingSongs.length + 1));
+      remainingSongs.splice(randomIndex, 0, songs[currentSongIndex]);
+      songs.length = 0;
+      Array.prototype.push.apply(songs, remainingSongs);
       currentSongIndex = -1;
       playNextSong();
     }
