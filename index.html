@@ -795,6 +795,8 @@
     
     // Toggle play/pause
     audioToggle.addEventListener('click', () => {
+      introAudio.muted = false;
+      introAudio.volume = volumeSlider.value; // Ensure volume matches slider state
       if (introAudio.paused) {
         introAudio.play();
         audioToggle.textContent = 'Pause Music';
