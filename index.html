@@ -625,7 +625,6 @@
 <body>
   <!-- Audio Controls -->
   <div class="audio-controls">
-    <button id="audioToggle">Play Music</button>
     <button id="shuffleButton">Shuffle</button>
     <input id="volumeSlider" type="range" min="0" max="1" step="0.01" value="0.5" />
   </div>
@@ -748,83 +747,110 @@
   </footer>
 
   <script>
+    const splash = document.getElementById('splash');
+    const splashDragOverlay = document.getElementById('splashDragOverlay');
+    const introAudio = document.getElementById('introAudio');
+    const mainframeIntro = document.getElementById('mainframeIntro');
+    const audioToggle = document.getElementById('audioToggle');
+    const shuffleButton = document.getElementById('shuffleButton');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const introLine1 = document.getElementById('introLine1');
+    const introLine2 = document.getElementById('introLine2');
+
+    let startY = 0;
+    let currentY = 0;
+    let isDragging = false;
+    let audioStarted = false;
+    const threshold = 100; 
+
     // Array of songs
     const songs = [
       "https://files.catbox.moe/4e75y2.mp3",
       "https://files.catbox.moe/gyhnmf.mp3",
       "https://files.catbox.moe/i0zvrf.mp3"
     ];
-    
-    let playedSongs = [];
-    let currentSongIndex = 0;
-    
-    // Shuffle Songs
-    function shuffleSongs() {
-      if (playedSongs.length === songs.length) {
-        playedSongs = []; // Reset played songs when all have been played
-      }
-    
-      // Filter out already played songs
-      const availableSongs = songs.filter((_, index) => !playedSongs.includes(index));
-    
-      // Pick a random song from the available ones
-      const nextSongIndex = Math.floor(Math.random() * availableSongs.length);
-    
-      // Update current song and track it as played
-      currentSongIndex = songs.indexOf(availableSongs[nextSongIndex]);
-      playedSongs.push(currentSongIndex);
-    
-      // Set the audio source to the new song
+    let currentSongIndex = -1;
+    // Play the next song in the queue
+    function playNextSong() {
+      currentSongIndex = (currentSongIndex + 1) % songs.length;
       introAudio.src = songs[currentSongIndex];
       introAudio.play();
-      console.log(`Now playing: ${songs[currentSongIndex]}`);
     }
     
-    // Audio Toggle Logic
-    audioToggle.textContent = 'Play Music'; // Default text
+    // Shuffle the playlist
+    function shuffleSongs() {
+      songs.sort(() => Math.random() - 0.5);
+      currentSongIndex = -1;
+      playNextSong();
+    }
+    // Adjust the audio volume
+    volumeSlider.addEventListener('input', (e) => {
+      introAudio.volume = e.target.value;
+    });
+    // Shuffle button functionality
+    shuffleButton.addEventListener('click', shuffleSongs);
     
+    // Play the next song when the current one ends
+    introAudio.addEventListener('ended', playNextSong);
+    
+    // Toggle play/pause
     audioToggle.addEventListener('click', () => {
       if (introAudio.paused) {
-        introAudio.play()
-          .then(() => {
-            audioToggle.textContent = 'Pause Music';
-            console.log("Audio is now playing.");
-          })
-          .catch(err => console.error("Error playing audio:", err));
+        introAudio.play();
+        audioToggle.textContent = 'Pause Music';
       } else {
         introAudio.pause();
         audioToggle.textContent = 'Play Music';
-        console.log("Audio is now paused.");
       }
     });
-    
-    // Shuffle Button Logic
-    shuffleButton.addEventListener('click', () => {
-      shuffleSongs();
-    });
-    
-    // Volume Control Logic
-    volumeSlider.value = introAudio.volume; // Sync slider with initial volume
-    
-    volumeSlider.addEventListener('input', (e) => {
-      introAudio.volume = e.target.value;
-      console.log(`Volume set to: ${introAudio.volume}`);
-    });
-    
-    // Play Next Song Automatically
-    introAudio.addEventListener('ended', shuffleSongs);
-    
-    // Debugging Events
-    introAudio.addEventListener('play', () => console.log("Audio started playing."));
-    introAudio.addEventListener('pause', () => console.log("Audio paused."));
-    introAudio.addEventListener('error', (e) => console.error("Audio error:", e));
-    
-    // Splash Drag Logic (unchanged)
+    function typeWriter(element, text, speed=50, callback) {
+      let index = 0;
+      const interval = setInterval(() => {
+        element.textContent = text.slice(0, index);
+        index++;
+        if (index > text.length) {
+          clearInterval(interval);
+          element.style.borderRight = 'none';
+          if (callback) callback();
+        }
+      }, speed);
+    }
+    introAudio.volume = 0.5;
+
+    function runMainframeIntro() {
+      mainframeIntro.style.opacity = '1';
+      mainframeIntro.style.transition = 'opacity 0.5s ease';
+
+      const line1 = "Welcome!";
+      const line2 = "Transitioning to the main page...";
+
+      typeWriter(introLine1, line1, 100, () => {
+        setTimeout(() => {
+          typeWriter(introLine2, line2, 75, () => {
+            setTimeout(() => {
+              introLine1.classList.add('glitch');
+              introLine2.classList.add('glitch');
+              setTimeout(() => {
+                mainframeIntro.style.opacity = '0';
+                setTimeout(() => {
+                  mainframeIntro.style.display = 'none';
+                  document.querySelector('header').classList.add('loaded');
+                  document.querySelector('.hero').classList.add('loaded');
+                  document.querySelector('main').classList.add('loaded');
+                  document.querySelector('footer').classList.add('loaded');
+                }, 1000);
+              }, 2000);
+            }, 1000);
+          });
+        }, 500);
+      });
+    }
+
     function onPointerDown(e) {
       isDragging = true;
       startY = e.touches ? e.touches[0].clientY : e.clientY;
       splashDragOverlay.style.transition = 'none';
-    
+
       if (!audioStarted) {
         audioStarted = true;
         const randomSong = songs[Math.floor(Math.random() * songs.length)];
@@ -832,23 +858,23 @@
         introAudio.play().catch(err => console.log("Audio start blocked:", err));
       }
     }
-    
+
     function onPointerMove(e) {
       if (!isDragging) return;
       currentY = e.touches ? e.touches[0].clientY : e.clientY;
       const diff = startY - currentY;
       if (diff > 0) {
         splashDragOverlay.style.transform = `translateY(-${diff}px)`;
-        splashDragOverlay.style.opacity = Math.max(1 - diff / 300, 0.5);
+        splashDragOverlay.style.opacity = Math.max(1 - diff/300, 0.5);
       }
     }
-    
+
     function onPointerUp() {
       if (!isDragging) return;
       isDragging = false;
       const diff = startY - currentY;
       splashDragOverlay.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
-    
+
       if (diff > threshold) {
         splash.style.opacity = '0';
         setTimeout(() => {
@@ -860,14 +886,24 @@
         splashDragOverlay.style.opacity = '1';
       }
     }
-    
+
+    audioToggle.addEventListener('click', () => {
+      if (introAudio.paused) {
+        introAudio.play();
+        audioToggle.textContent = 'Pause Music';
+      } else {
+        introAudio.pause();
+        audioToggle.textContent = 'Play Music';
+      }
+    });
+
     splashDragOverlay.addEventListener('mousedown', onPointerDown);
     splashDragOverlay.addEventListener('mousemove', onPointerMove);
     splashDragOverlay.addEventListener('mouseup', onPointerUp);
     splashDragOverlay.addEventListener('mouseleave', onPointerUp);
-    
-    splashDragOverlay.addEventListener('touchstart', onPointerDown, { passive: true });
-    splashDragOverlay.addEventListener('touchmove', onPointerMove, { passive: true });
+
+    splashDragOverlay.addEventListener('touchstart', onPointerDown, {passive: true});
+    splashDragOverlay.addEventListener('touchmove', onPointerMove, {passive: true});
     splashDragOverlay.addEventListener('touchend', onPointerUp);
 
     // Plexus Animation
