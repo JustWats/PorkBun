@@ -887,16 +887,6 @@
       }
     }
 
-    audioToggle.addEventListener('click', () => {
-      if (introAudio.paused) {
-        introAudio.play();
-        audioToggle.textContent = 'Pause Music';
-      } else {
-        introAudio.pause();
-        audioToggle.textContent = 'Play Music';
-      }
-    });
-
     splashDragOverlay.addEventListener('mousedown', onPointerDown);
     splashDragOverlay.addEventListener('mousemove', onPointerMove);
     splashDragOverlay.addEventListener('mouseup', onPointerUp);
