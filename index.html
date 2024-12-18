@@ -845,19 +845,21 @@
     function playNextSong() {
       currentSongIndex = (currentSongIndex + 1) % songs.length;
       introAudio.src = songs[currentSongIndex];
-      introAudio.play();
+      introAudio.play().catch(err => console.log("Error playing audio:", err));
     }
     
     // Shuffle the playlist
     function shuffleSongs() {
-      const remainingSongs = songs.filter((_, index) => index !== currentSongIndex);
-      remainingSongs.sort(() => Math.random() - 0.5);
-      const randomIndex = Math.floor(Math.random() * (remainingSongs.length + 1));
-      remainingSongs.splice(randomIndex, 0, songs[currentSongIndex]);
-      songs.length = 0;
-      Array.prototype.push.apply(songs, remainingSongs);
-      currentSongIndex = -1;
-      playNextSong();
+    const currentSong = songs[currentSongIndex];
+    const otherSongs = songs.filter((_, index) => index !== currentSongIndex);
+      for (let i = otherSongs.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [otherSongs[i], otherSongs[j]] = [otherSongs[j], otherSongs[i]];
+    }
+    songs.length = 0;
+    songs.push(currentSong, ...otherSongs);
+    currentSongIndex = 0;
+    playNextSong(); 
     }
     // Adjust the audio volume
     volumeSlider.addEventListener('input', (e) => {
