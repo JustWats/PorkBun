@@ -19,58 +19,6 @@
   <link rel="manifest" href="/site.webmanifest">
 
   <style>
-
-  /* Resources Section */
-  .resources {
-    margin-top: 40px;
-    padding: 0 20px;
-    text-align: center;
-    color: var(--text-color);
-  }
-  
-  .resources .section-title {
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-    color: var(--heading-color);
-    border-bottom: 2px solid var(--accent-color);
-    display: inline-block;
-    padding-bottom: 5px;
-    letter-spacing: 1px;
-    position: relative;
-  }
-  
-  .resources .resources-list {
-    list-style: none;
-    padding: 0;
-    margin: 20px 0;
-  }
-  
-  .resources .resources-list li {
-    margin-bottom: 20px;
-    text-align: left;
-    max-width: 800px;
-    margin: 0 auto;
-  }
-  
-  .resources .resources-list li a {
-    color: var(--accent-color);
-    font-size: 1rem;
-    text-decoration: none;
-    font-weight: bold;
-    transition: color var(--transition-speed);
-  }
-  
-  .resources .resources-list li a:hover {
-    color: #fff;
-  }
-  
-  .resources .resources-list li p {
-    font-size: 0.9rem;
-    color: var(--text-color);
-    margin-top: 5px;
-  }
-
-    
   .audio-controls {
   display: flex;
   justify-content: center;
@@ -724,7 +672,6 @@
         <li><a href="#featured">Featured</a></li>
         <li><a href="#recent">Recent</a></li>
         <li><a href="#about">About</a></li>
-        <li><a href="#resources">Resources</a></li>
       </ul>
       <div class="audio-toggle">
         <button id="audioToggle">Pause Music</button>
@@ -761,25 +708,6 @@
       <div class="posts-grid">
         <!-- ... other posts ... -->
       </div>
-    </section>
-    
-    <!-- Resources Section -->
-    <section class="resources" id="resources">
-      <h2 class="section-title">Resources</h2>
-      <ul class="resources-list">
-        <li>
-          <a href="https://jaiminton.com" target="_blank" rel="noopener noreferrer">Root Cause Analysis</a>
-          <p>An expansive blog written by Jai Minton/CyberRaiju. Contains topics like blue team/red team cheatsheets, CTF writeups, and guides for reverse engineering and malware analysis.</p>
-        </li>
-        <li>
-          <a href="https://vx-underground.org" target="_blank" rel="noopener noreferrer">Vx-Underground</a>
-          <p>A website collecting and hosting several cybersecurity whitepapers, malware write-ups, research papers, and incident response reports.</p>
-        </li>
-        <li>
-          <a href="https://viz.greynoise.io" target="_blank" rel="noopener noreferrer">Greynoise Visualizer</a>
-          <p>An online platform for searching and visualizing indicators of compromise and their associations..</p>
-        </li>
-      </ul>
     </section>
 
     <!-- About Section -->
@@ -851,14 +779,9 @@
     
     // Shuffle the playlist
     function shuffleSongs() {
-      let newIndex;
-      do {
-          newIndex  Math.floor(Math.random() * songs.length);
-      } while (newIndex === currentSongIndex);
-
-      currentSongIndex = newIndex;
-      introAudio.src = songs[currentSongIndex];
-      intoAudio.play();
+      songs.sort(() => Math.random() - 0.5);
+      currentSongIndex = -1;
+      playNextSong();
     }
     // Adjust the audio volume
     volumeSlider.addEventListener('input', (e) => {
@@ -880,16 +803,6 @@
         audioToggle.textContent = 'Play Music';
       }
     });
-
-    // Update the button text when the audio ends
-    introAudio.addEventListener('play', () => {
-      audioToggle.textContent = 'Pause Music';
-    });
-    
-    introAudio.addEventListener('pause', () => {
-      audioToggle.textContent = 'Play Music';
-    });
-
     function typeWriter(element, text, speed=50, callback) {
       let index = 0;
       const interval = setInterval(() => {
