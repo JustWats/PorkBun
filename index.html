@@ -625,6 +625,7 @@
 <body>
   <!-- Audio Controls -->
   <div class="audio-controls">
+    <button id="audioToggle">Play Music</button>
     <button id="shuffleButton">Shuffle</button>
     <input id="volumeSlider" type="range" min="0" max="1" step="0.01" value="0.5" />
   </div>
@@ -769,44 +770,71 @@
       "https://files.catbox.moe/gyhnmf.mp3",
       "https://files.catbox.moe/i0zvrf.mp3"
     ];
-    let currentSongIndex = -1;
-    // Play the next song in the queue
-    function playNextSong() {
-      currentSongIndex = (currentSongIndex + 1) % songs.length;
-      introAudio.src = songs[currentSongIndex];
-      introAudio.play();
-    }
-    
-    // Shuffle the playlist
+    let playedSongs = [];
+    let currentSongIndex = 0;
+    const introAudio = new Audio(); // Create the audio element
+    introAudio.loop = false; // Disable looping for shuffle behavior
+    introAudio.volume = 0.5; // Set initial volume
+    // Shuffle Songs
     function shuffleSongs() {
-      songs.sort(() => Math.random() - 0.5);
-      currentSongIndex = -1;
-      playNextSong();
-    }
-    // Adjust the audio volume
-    volumeSlider.addEventListener('input', (e) => {
-      introAudio.volume = e.target.value;
-    });
-    // Shuffle button functionality
-    shuffleButton.addEventListener('click', shuffleSongs);
-    
-    // Play the next song when the current one ends
-    introAudio.addEventListener('ended', playNextSong);
-    
-    // Toggle play/pause
-    audioToggle.addEventListener('click', () => {
-      introAudio.muted = false;
-      introAudio.volume = volumeSlider.value;
-    
-      if (introAudio.paused) {
-        introAudio.play().then(() => {
-          audioToggle.textContent = 'Pause Music';
-        }).catch(err => console.error("Error playing audio:", err));
-      } else {
-        introAudio.pause();
-        audioToggle.textContent = 'Play Music';
+      if (playedSongs.length === songs.length) {
+        playedSongs = []; // Reset played songs when all have been played
       }
-    });
+    // Filter out already played songs
+    const availableSongs = songs.filter((_, index) => !playedSongs.includes(index));
+  
+    // Pick a random song from the available ones
+    const nextSongIndex = Math.floor(Math.random() * availableSongs.length);
+  
+    // Update current song and track it as played
+    currentSongIndex = songs.indexOf(availableSongs[nextSongIndex]);
+    playedSongs.push(currentSongIndex);
+  
+    // Set the audio source to the new song
+    introAudio.src = songs[currentSongIndex];
+    introAudio.play();
+    console.log(`Now playing: ${songs[currentSongIndex]}`);
+  }
+  
+  // Audio Toggle Logic
+  const audioToggle = document.getElementById('audioToggle');
+  audioToggle.textContent = 'Play Music'; // Default text
+  
+  audioToggle.addEventListener('click', () => {
+    if (introAudio.paused) {
+      introAudio.play()
+        .then(() => {
+          audioToggle.textContent = 'Pause Music';
+          console.log("Audio is now playing.");
+        })
+        .catch(err => console.error("Error playing audio:", err));
+    } else {
+      introAudio.pause();
+      audioToggle.textContent = 'Play Music';
+      console.log("Audio is now paused.");
+    }
+  });
+  
+  // Shuffle Button Logic
+  const shuffleButton = document.getElementById('shuffleButton');
+  shuffleButton.addEventListener('click', () => {
+    shuffleSongs();
+  });
+  
+  // Volume Control Logic
+  const volumeSlider = document.getElementById('volumeSlider');
+  volumeSlider.value = introAudio.volume; // Sync slider with initial volume
+  
+  volumeSlider.addEventListener('input', (e) => {
+    introAudio.volume = e.target.value;
+    console.log(`Volume set to: ${introAudio.volume}`);
+  });
+
+  // Play Next Song Automatically
+  introAudio.addEventListener('ended', shuffleSongs);
+  introAudio.addEventListener('play', () => console.log("Audio started playing."));
+  introAudio.addEventListener('pause', () => console.log("Audio paused."));
+  introAudio.addEventListener('error', (e) => console.error("Audio error:", e));
 
     function typeWriter(element, text, speed=50, callback) {
       let index = 0;
