@@ -853,7 +853,7 @@
     function shuffleSongs() {
       let newIndex;
       do {
-          newIndex  Math.floor(Math.random() * songs.length);
+          newIndex = Math.floor(Math.random() * songs.length);
       } while (newIndex === currentSongIndex);
 
       currentSongIndex = newIndex;
