@@ -331,6 +331,11 @@
       display: none;
     }
 
+    if (!introAudio.src || introAudio.src === '') {
+    introAudio.src = songs[0]; // Default to the first song in the array
+  }
+
+
     /* Mainframe Intro */
     .mainframe-intro {
       position: fixed;
@@ -872,14 +877,17 @@
     
     // Toggle play/pause
     audioToggle.addEventListener('click', () => {
-      if (introAudio.paused) {
-        introAudio.play();
-        audioToggle.textContent = 'Pause Music';
-      } else {
-        introAudio.pause();
-        audioToggle.textContent = 'Play Music';
-      }
-    });
+    if (introAudio.paused) {
+      introAudio.play()
+        .then(() => {
+          audioToggle.textContent = 'Pause Music';
+        })
+        .catch(err => console.error('Error playing audio:', err));
+    } else {
+      introAudio.pause();
+      audioToggle.textContent = 'Play Music';
+    }
+  });
 
     // Update the button text when the audio ends
     introAudio.addEventListener('play', () => {
