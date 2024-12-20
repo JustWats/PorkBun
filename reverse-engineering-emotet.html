@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Guide on reverse engineering Emotet's obfuscated PowerShell payloads." />
+  <meta name="description" content="Guide on reverse engineering Emotet's obfuscated PowerShell payloads that abuse Abstract Syntax Tree manipulation." />
   <meta name="keywords" content="Emotet, PowerShell, Malware Analysis, Reverse Engineering, Cybersecurity" />
 
   <title>Reverse Engineering Emotet's Obfuscated PowerShell Payloads</title>
@@ -28,7 +28,7 @@
       overflow-x: hidden;
     }
 
-    /* Amplified CRT effect */
+    /* CRT effect */
     body::before {
       content:"";
       position: fixed; 
@@ -195,12 +195,12 @@
   <main>
     <h1>Reverse Engineering Emotet's Obfuscated PowerShell Payloads</h1>
 
-    <p><strong>Emotet</strong> is a sophisticated banking Trojan that has evolved into a modular botnet. One of its advanced techniques involves the use of deeply obfuscated PowerShell scripts to deliver malicious payloads. This guide walks through the reverse engineering process of such a script, utilizing tools like <a href="https://github.com/deobfshell/deobfshell" target="_blank" rel="noopener noreferrer">DeobfShell</a> and <a href="https://gchq.github.io/CyberChef/" target="_blank" rel="noopener noreferrer">CyberChef</a>.</p>
+    <p><strong>Emotet</strong> is a banking Trojan that's evolved into a modular botnet. One of its practices involves usage in PowerShell scripts that are manipulated to deliver malicious payloads. This guide walks through the process of understanding such a script, utilizing tools like <a href="https://github.com/thewhiteninja/deobshell/" target="_blank" rel="noopener noreferrer">DeobShell</a> and <a href="https://gchq.github.io/CyberChef/" target="_blank" rel="noopener noreferrer">CyberChef</a>.</p>
 
     <h2>Table of Contents</h2>
     <ul>
       <li><a href="#introduction">Introduction</a></li>
-      <li><a href="#understanding-the-obfuscated-script">Understanding the Obfuscated PowerShell Script</a></li>
+      <li><a href="#understanding-the-script">Understanding the Script</a></li>
       <li>
         <a href="#reverse-engineering-process">Reverse Engineering Process</a>
         <ul>
@@ -220,12 +220,12 @@
       <strong>Emotet</strong> has been a persistent threat in the cybersecurity landscape, known for its ability to deliver additional malware payloads, including banking Trojans and ransomware. Its primary method of payload delivery involves obfuscated PowerShell scripts that encode and compress malicious commands, designed to evade detection by traditional security measures.
     </p>
     <p>
-      In this guide, we'll dissect a sample Emotet PowerShell script, demonstrating how to deobfuscate, decode, and decompress the payload to unveil its malicious intent.
+      In this guide, we'll dissect a sample Emotet PowerShell script, demonstrating how to deobfuscate, decode, and decompress the payload to unmask it's properties.
     </p>
 
     <h2 id="understanding-the-obfuscated-script">Understanding the Obfuscated PowerShell Script</h2>
     <p>
-      Here's the obfuscated PowerShell script we'll analyze:
+      Here's the PowerShell script we'll analyze:
     </p>
 
     <div class="image-container">
@@ -240,18 +240,18 @@ ${eXEcUTIoNcONTExt}."INvoKEcomMAnd".(  "{3}{2}{1}{0}"-f 't','IP','cR','invOKES' 
     </code></pre>
 
     <div class="image-container">
-      <img src="https://i.imgur.com/DSLoYsm.png" alt="Deobfuscation process using DeobfShell to parse the AST structure and reformat the script">
-      <figcaption>Figure 2: Deobfuscation process using DeobfShell to parse the AST structure and reformat the script.</figcaption>
+      <img src="https://i.imgur.com/DSLoYsm.png" alt="Deobfuscation process using DeobShell to parse the AST structure and reformat the script">
+      <figcaption>Figure 2: Deobfuscation process using DeobShell to parse the AST structure and reformat the script.</figcaption>
     </div>
 
     <p>
-      At first glance, this script is deliberately obfuscated to conceal its malicious intent. Through a series of steps, including deobfuscation, decoding, and decompression, we can unravel its functionality.
+      At first glance, this script is deliberately obfuscated to conceal its operations. Through a series of steps, including deobfuscation, decoding, and decompression, we can better understand its functionality.
     </p>
 
     <h2 id="reverse-engineering-process">Reverse Engineering Process</h2>
-    <p>To effectively analyze this script, we'll follow a structured approach:</p>
+    <p>To effectively analyze this script, we'll follow this approach:</p>
     <ol>
-      <li>Deobfuscate the PowerShell Script</li>
+      <li>Deobfuscate the Script</li>
       <li>Extract the Base64 String</li>
       <li>Decode the Base64 String</li>
       <li>Decompress the Payload</li>
@@ -262,8 +262,8 @@ ${eXEcUTIoNcONTExt}."INvoKEcomMAnd".(  "{3}{2}{1}{0}"-f 't','IP','cR','invOKES' 
     <p><strong>Objective:</strong> Simplify the obfuscated script to make its operations transparent.</p>
     <p><strong>Approach:</strong></p>
     <ul>
-      <li><strong>Identify Patterns and Common Techniques:</strong> Emotet often employs variable renaming, string manipulation, and dynamic method invocation.</li>
-      <li><strong>Use Deobfuscation Tools:</strong> Utilize tools like <a href="https://github.com/deobfshell/deobfshell" target="_blank" rel="noopener noreferrer">DeobfShell</a> to parse and simplify the script.</li>
+      <li><strong>Identify Patterns and Common Techniques:</strong> In this example, Emotet is employing randomized variables, abstract syntax tree manipulation, and dynamic method invocations.</li>
+      <li><strong>Use Deobfuscation Tools:</strong> Utilize tools like <a href="https://github.com/thewhiteninja/deobshell/" target="_blank" rel="noopener noreferrer">DeobShell</a> to parse and simplify the script.</li>
     </ul>
     <p><strong>Implementation:</strong></p>
 
@@ -277,17 +277,7 @@ ${pC695I} = [tYpE]( "{2}{1}{0}{3}"-f'NM','O','eNvIR','ent' );
 $EnvironmentType = [Type]("eNvIR" + "O" + "NM" + "ent");  # Resolves to 'Environment'
     </code></pre>
 
-    <h4>2. String Formatting</h4>
-    <p>Decode the string formatting to reveal actual method names.</p>
-    <pre><code>
-# Original
-"{2}{1}{0}{3}"-f'NM','O','eNvIR','ent'
-
-# Simplified
-"eNvIR" + "O" + "NM" + "ent"  # Results in "Environment"
-    </code></pre>
-
-    <h4>3. Dynamic Method Invocation</h4>
+    <h4>2. Dynamic Method Invocation</h4>
     <p>Understand how methods are being dynamically constructed and invoked.</p>
     <pre><code>
 # Original
@@ -298,15 +288,15 @@ $EnvironmentType = [Type]("eNvIR" + "O" + "NM" + "ent");  # Resolves to 'Environ
 # Assuming $VerbosePreference = "SilentlyContinue", indices 1 and 3 correspond to 'i' and 'e', resulting in 'iex'
     </code></pre>
 
-    <h4>4. Parsing the AST with DeobfShell</h4>
+    <h4>3. Parsing the AST with DeobShell</h4>
     <p>
-      <strong>DeobfShell</strong> leverages the .NET Framework's Abstract Syntax Tree (AST) to parse and deobfuscate PowerShell scripts. The AST provides a hierarchical tree representation of the script's syntax, allowing tools like DeobfShell to analyze and transform obfuscated code systematically.
+      <strong>DeobShell</strong> leverages the .NET Framework's Abstract Syntax Tree (AST) to parse and deobfuscate PowerShell scripts. The AST provides a hierarchical tree representation of the script's syntax, allowing tools like DeobShell to analyze and transform obfuscated code systematically.
     </p>
     <p>
-      By parsing the AST, DeobfShell can identify patterns such as variable assignments, method invocations, and string manipulations. It then refactors the script by renaming variables to meaningful names, simplifying expressions, and reconstructing dynamically built method names.
+      By parsing the AST, DeobShell can identify patterns such as variable assignments, method invocations, and string manipulations. It then refactors the script by renaming variables to meaningful names, simplifying expressions, and reconstructing dynamically built method names.
     </p>
     <p>
-      In our example, DeobfShell parses the AST to:
+      In our example, DeobShell parses the AST to:
     </p>
     <ul>
       <li>Identify and rename variables like <code>${pC695I}</code> to <code>$EnvironmentType</code>.</li>
@@ -515,8 +505,8 @@ foreach ($OWc in $OMS) {
     <p>To effectively reverse engineer and analyze such obfuscated scripts, the following tools and resources are invaluable:</p>
     <ol>
       <li>
-        <strong><a href="https://github.com/deobfshell/deobfshell" target="_blank" rel="noopener noreferrer">DeobfShell</a>:</strong> A tool designed to simplify and deobfuscate PowerShell scripts by parsing the .NET Framework's Abstract Syntax Tree (AST).
-        <p><em>Usage:</em> DeobfShell parses the AST to identify and refactor obfuscated elements, such as variable renaming and string manipulations, transforming the script into a more readable format.</p>
+        <strong><a href="https://github.com/thewhiteninja/deobshell/" target="_blank" rel="noopener noreferrer">DeobShell</a>:</strong> A tool designed to simplify and deobfuscate PowerShell scripts by parsing the .NET Framework's Abstract Syntax Tree (AST).
+        <p><em>Usage:</em> DeobShell parses the AST to identify and refactor obfuscated elements, such as variable renaming and string manipulations, transforming the script into a more readable format.</p>
       </li>
       <li>
         <strong><a href="https://gchq.github.io/CyberChef/" target="_blank" rel="noopener noreferrer">CyberChef</a>:</strong> A powerful web-based tool for encoding, decoding, and analyzing data.
