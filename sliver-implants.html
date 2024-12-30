@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- Updated Meta Tags for Sliver Content -->
+  <meta name="description" content="Guide on analyzing and detecting Sliver C2 implants." />
+  <meta name="keywords" content="Sliver, C2 detection, DFIR, Cybersecurity, payload analysis" />
+
+  <title>Detecting Sliver C2 Implants</title>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-color: #0e0e0e;
+      --text-color: #ccc;
+      --accent-color: #48a9a6; 
+      --heading-color: #fff;
+    }
+
+    body {
+      background: var(--bg-color);
+      font-family: 'Orbitron', sans-serif;
+      color: var(--text-color);
+      margin: 0; 
+      padding: 0;
+      line-height: 1.6;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Amplified CRT effect */
+    body::before {
+      content: "";
+      position: fixed; 
+      top: 0; 
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 2px);
+      background-size: 100% 4px;
+      mix-blend-mode: overlay;
+      opacity: 0.2;
+      animation: flickerCRT 3s infinite alternate ease-in-out;
+      z-index: -1;
+    }
+
+    @keyframes flickerCRT {
+      0% { opacity: 0.15; }
+      50% { opacity: 0.25; }
+      100% { opacity: 0.15; }
+    }
+
+    .crt-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      opacity: 0.15;
+      mix-blend-mode: screen;
+      background: repeating-linear-gradient(
+        rgba(255,255,255,0.05) 0,
+        rgba(255,255,255,0.05) 1px,
+        transparent 2px,
+        transparent 4px
+      );
+      animation: crtGlitch 5s linear infinite;
+      z-index: 1000;
+    }
+
+    @keyframes crtGlitch {
+      0%   { transform: translateY(-5%); }
+      50%  { transform: translateY(5%); }
+      100% { transform: translateY(-5%); }
+    }
+
+    header {
+      background: rgba(14,14,14,0.95);
+      backdrop-filter: blur(3px);
+      border-bottom: 1px solid #222;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header .logo {
+      color: var(--heading-color);
+      font-size: 1.3rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .back-link {
+      color: var(--text-color);
+      text-decoration: none;
+      border: 1px solid var(--accent-color);
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: background 0.3s;
+    }
+
+    .back-link:hover {
+      background: var(--accent-color);
+      color: #000;
+    }
+
+    main {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    h1 {
+      color: var(--heading-color);
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      color: var(--heading-color);
+      font-size: 1.2rem;
+      margin: 20px 0 10px;
+    }
+
+    p {
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    code, pre {
+      background: #111;
+      color: #48a9a6;
+      padding: 2px 4px;
+      border-radius: 3px;
+      font-size: 0.9rem;
+    }
+
+    pre {
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+
+    a {
+      color: var(--accent-color);
+      text-decoration: none;
+      border-bottom: 1px dashed var(--accent-color);
+    }
+
+    a:hover {
+      text-decoration: none;
+      background: var(--accent-color);
+      color: #000;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--text-color);
+      font-size: 0.8rem;
+      border-top: 1px solid #222;
+      padding: 20px;
+      margin-top: 40px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="crt-overlay"></div>
+  
+  <header>
+    <a class="logo" href="index.html"><#JustWats></a>
+    <a class="back-link" href="index.html">Back</a>
+  </header>
+  
+  <main>
+    <!-- Updated Title and Content -->
+    <h1>Detecting Sliver C2 Implants</h1>
+
+    <p>
+      As adversaries continue to evolve their techniques, open-source Command &amp; Control (C2) frameworks like 
+      <strong>Sliver</strong> have gained traction among both ethical penetration testers and malicious actors. 
+      Sliver is a flexible, Golang-based C2 platform that supports multiple architectures and communication methods. 
+      This guide will walk you through practical approaches to analyzing and detecting Sliver implants during 
+      Digital Forensics &amp; Incident Response (DFIR) investigations.
+    </p>
+
+    <h2>Why Sliver is Different</h2>
+    <p>
+      Unlike some more well-known frameworks like Cobalt Strike or Metasploit, Sliver uses Golang’s 
+      statically compiled binaries, potentially containing minimal AV/EDR signatures. It also supports 
+      modules and multiple communication channels, making it a challenge to detect via traditional 
+      signature-based methods alone.
+    </p>
+
+    <h2>Common Indicators and Artifacts</h2>
+    <p>
+      When hunting for Sliver implants, keep an eye on:
+    </p>
+    <ul>
+      <li><strong>Unusual Golang Function Names:</strong> Statically compiled Golang binaries can have 
+      distinct function names (e.g., <code>main.main</code>, <code>runtime.(*mheap_).alloc</code>). 
+      Searching for these may reveal suspicious processes.</li>
+      <li><strong>Network Connections:</strong> Sliver supports multiple transport protocols (HTTP/2, mTLS, 
+      DNS). Inspect unusual DNS queries or encrypted HTTP/2 traffic from internal endpoints to 
+      suspicious external hosts.</li>
+      <li><strong>Process Execution:</strong> Check for processes spawned at odd times or unusual 
+      directories (e.g., <code>%APPDATA%</code>, <code>/tmp</code>) that match Golang binary structures.</li>
+    </ul>
+
+    <h2>Memory Analysis for Sliver Shellcode</h2>
+    <p>
+      Similar to other C2 frameworks, Sliver can be injected directly as shellcode. Traditional memory 
+      forensics can help isolate suspicious code sections:
+    </p>
+    <ul>
+      <li>
+        Use <code>Volatility</code> or <code>Rekall</code> to list processes and look for injected segments 
+        that do not map to legitimate modules.
+      </li>
+      <li>
+        Look for RWX (read-write-execute) memory regions that might contain unpacked or decrypted 
+        Sliver implants.
+      </li>
+      <li>
+        Check memory strings for references to Sliver’s internal commands, Go runtime, or 
+        suspicious domain names.
+      </li>
+    </ul>
+
+    <h2>Detecting Sliver via Network Traffic</h2>
+    <p>
+      Sliver implants often communicate over standard protocols to blend in. Still, patterns can emerge:
+    </p>
+    <ul>
+      <li>
+        <strong>HTTP/2 traffic anomalies:</strong> If the environment rarely uses HTTP/2, 
+        sudden spikes or odd session patterns may hint at Sliver beacons.
+      </li>
+      <li>
+        <strong>mTLS fingerprinting:</strong> If Sliver uses mutual TLS, the certificate 
+        chain might be unusual or self-signed. Logging and analyzing certificate details can expose 
+        suspicious endpoints.
+      </li>
+      <li>
+        <strong>DNS tunneling attempts:</strong> Sliver includes DNS-based channels. 
+        Large volumes of DNS queries with random subdomains or high entropy can indicate 
+        DNS tunneling for C2.
+      </li>
+    </ul>
+
+    <h2>Reverse Engineering the Implant</h2>
+    <p>
+      If you capture the implant binary, you can analyze it with 
+      <code>strings</code>, <code>ghidra</code>, or <code>r2</code> (Radare2) to reveal Sliver 
+      functionality. Go binaries can be large, but scanning for package names like 
+      <code>github.com/bishopfox/sliver</code> can confirm the presence of Sliver code. 
+      You might also see references to shared libraries or modules indicative of the framework’s 
+      modular approach.
+    </p>
+
+    <h2>Practical Example</h2>
+    <p>
+      Suppose you identify a suspicious Golang process running on a critical server. 
+      Memory analysis shows a segment containing references to <code>github.com/bishopfox/sliver</code>. 
+      Network logs reveal repeated DNS queries to randomly generated subdomains 
+      followed by large base64-encoded strings over HTTP/2. 
+      By correlating these artifacts, you can confirm Sliver-based activity.
+    </p>
+
+    <h2>Conclusion</h2>
+    <p>
+      Sliver’s flexibility and open-source nature make it an increasingly popular C2 framework. 
+      Detecting it requires a combination of memory forensics, process analysis, 
+      and network telemetry. By recognizing the patterns in Golang binaries, suspicious DNS usage, 
+      and potential HTTP/2 or mTLS anomalies, you can successfully uncover Sliver implants 
+      and disrupt attacker operations.
+    </p>
+  </main>
+
+  <footer>
+    &copy; <span id="year"></span> Justin Watson.
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+  </footer>
+</body>
+</html>
