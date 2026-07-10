@@ -1,9 +1,9 @@
 name: Temporary Catbox asset recovery
 
 on:
-  push:
+  pull_request:
     branches:
-      - tmp-catbox-recovery-20260710
+      - main
 
 permissions:
   contents: read
