@@ -1,0 +1,63 @@
+name: Temporary Catbox asset recovery
+
+on:
+  push:
+    branches:
+      - tmp-catbox-recovery-20260710
+
+permissions:
+  contents: read
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Download supplied assets
+        shell: bash
+        run: |
+          set -u
+          mkdir -p recovered
+          : > recovered/recovery.log
+
+          for id in 4e75y2 gyhnmf i0zvrf; do
+            url="https://files.catbox.moe/${id}.mp3"
+            out="recovered/${id}.mp3"
+            echo "=== ${url} ===" | tee -a recovered/recovery.log
+
+            if curl -4 -fL --retry 3 --retry-all-errors --connect-timeout 20 --max-time 240 \
+              -A 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/150 Safari/537.36' \
+              -o "${out}" "${url}" 2>&1 | tee -a recovered/recovery.log; then
+              echo "downloaded via normal IPv4 DNS" | tee -a recovered/recovery.log
+            elif curl -fL --retry 3 --retry-all-errors --connect-timeout 20 --max-time 240 \
+              --resolve files.catbox.moe:443:108.181.20.43 \
+              -A 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/150 Safari/537.36' \
+              -o "${out}" "${url}" 2>&1 | tee -a recovered/recovery.log; then
+              echo "downloaded via pinned Catbox IPv4" | tee -a recovered/recovery.log
+            else
+              rm -f "${out}"
+              echo "FAILED" | tee -a recovered/recovery.log
+              continue
+            fi
+
+            if [ ! -s "${out}" ]; then
+              echo "empty response; removing" | tee -a recovered/recovery.log
+              rm -f "${out}"
+              continue
+            fi
+
+            file "${out}" | tee -a recovered/recovery.log
+            sha256sum "${out}" | tee -a recovered/recovery.log
+            stat --printf='size=%s bytes\n' "${out}" | tee -a recovered/recovery.log
+          done
+
+          ls -lah recovered | tee -a recovered/recovery.log
+
+      - name: Upload recovery output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: catbox-recovered-assets
+          path: recovered/
+          if-no-files-found: error
+          retention-days: 1
